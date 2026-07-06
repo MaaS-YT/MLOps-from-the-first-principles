@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Introduction to AWS & EKS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f9f9f8;
+    --surface: #ffffff;
+    --surface-alt: #f3f3f1;
+    --border: #e4e4e0;
+    --border-strong: #ccccc8;
+    --text: #1a1a18;
+    --text-secondary: #5a5a56;
+    --text-muted: #8a8a86;
+    --accent: #2563eb;
+    --accent-bg: #eff6ff;
+    --accent-border: #bfdbfe;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --success-border: #bbf7d0;
+    --warning: #b45309;
+    --warning-bg: #fffbeb;
+    --warning-border: #fde68a;
+    --purple: #7c3aed;
+    --purple-bg: #f5f3ff;
+    --purple-border: #ddd6fe;
+    --radius: 10px;
+    --font: 'Inter', system-ui, sans-serif;
+    --mono: 'Fira Code', monospace;
+    --max-w: 780px;
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 2rem 1rem 5rem;
+  }
+
+  .container { max-width: var(--max-w); margin: 0 auto; }
+
+  /* Header */
+  .header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+  .header-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; }
+  .series-badge {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--accent); background: var(--accent-bg); border: 1px solid var(--accent-border);
+    padding: 3px 10px; border-radius: 20px;
+  }
+  .part-num { font-size: 13px; color: var(--text-muted); }
+  h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600; line-height: 1.25; color: var(--text); margin-bottom: 0.75rem; }
+  .subtitle { font-size: 16px; color: var(--text-secondary); line-height: 1.6; max-width: 600px; }
+  .meta { margin-top: 1.25rem; font-size: 13px; color: var(--text-muted); display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  .meta span { display: flex; align-items: center; gap: 5px; }
+
+  /* TOC */
+  .toc {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1.25rem 1.5rem; margin-bottom: 3rem;
+  }
+  .toc-title { font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.75rem; }
+  .toc ol { padding-left: 1.25rem; }
+  .toc li { margin-bottom: 4px; }
+  .toc a { font-size: 14px; color: var(--accent); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  /* Sections */
+  .section { margin-bottom: 3rem; }
+  .section-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 1.25rem; }
+  .section-icon {
+    width: 36px; height: 36px; border-radius: 8px; background: var(--accent-bg);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+  }
+  .section-icon svg { width: 18px; height: 18px; color: var(--accent); }
+  h2 { font-size: 1.25rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+  h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; margin-top: 1.25rem; }
+  p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+  /* Cards grid */
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 1rem; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+  }
+  .card-label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+  .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+  .card-body { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+  /* Layer stack */
+  .layer-stack { display: flex; flex-direction: column; gap: 6px; }
+  .layer {
+    padding: 11px 16px; border-radius: 8px; display: flex; align-items: center;
+    justify-content: space-between; gap: 12px; font-size: 14px; font-weight: 500;
+  }
+  .layer-left { display: flex; align-items: center; gap: 10px; }
+  .layer-sub { font-size: 12px; font-weight: 400; opacity: 0.75; }
+  .l5 { background: var(--purple-bg); color: var(--purple); border: 1px solid var(--purple-border); }
+  .l4 { background: var(--accent-bg); color: var(--accent); border: 1px solid var(--accent-border); }
+  .l3 { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+  .l2 { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+  .l1 { background: var(--surface-alt); color: var(--text-secondary); border: 1px solid var(--border); }
+  .layer-arrow { font-size: 11px; text-align: center; color: var(--text-muted); padding: 2px 0; }
+
+  /* Two col */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 540px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* Callout */
+  .callout {
+    background: var(--accent-bg); border: 1px solid var(--accent-border); border-left: 3px solid var(--accent);
+    border-radius: 8px; padding: 1rem 1.1rem; margin: 1rem 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+  }
+  .callout strong { color: var(--text); }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead { background: var(--surface-alt); }
+  th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+  td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; line-height: 1.5; }
+  tr:last-child td { border-bottom: none; }
+  td:first-child { font-weight: 500; color: var(--text); white-space: nowrap; }
+  .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+  .pill-default { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+  .pill-opt { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+
+  /* Points list */
+  .points { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .points li {
+    font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+    padding: 0.75rem 1rem 0.75rem 2.5rem; position: relative;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .points li::before {
+    content: ''; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+  }
+  .points li strong { color: var(--text); }
+
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+  /* Code */
+  code { font-family: var(--mono); font-size: 12px; background: var(--surface-alt); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; color: var(--text); }
+
+  /* Stat cards */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+  @media (max-width: 480px) { .stats { grid-template-columns: 1fr 1fr; } }
+  .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+  .stat-num { font-size: 1.6rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+  .stat-label { font-size: 12px; color: var(--text-muted); }
+
+  /* Next section */
+  .next-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 480px) { .next-grid { grid-template-columns: 1fr; } }
+  .next-card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+  }
+  .next-card .label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+  .next-card p { font-size: 13px; color: var(--text-secondary); margin: 0; }
+
+  /* Footer */
+  .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Introduction to AWS &amp; EKS</h1>
+    <p class="subtitle">Understanding the AWS cloud platform, its architecture, and a deep dive into the Elastic Kubernetes Service for running modern, scalable workloads.</p>
+  </header>
+
+
+  <!-- 1. What is AWS -->
+  <section class="section" id="what-is-aws">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+      </div>
+      <h2>What is AWS?</h2>
+    </div>
+
+    <p>Amazon Web Services is a comprehensive cloud computing platform providing IT resources — compute, storage, databases, and 200+ services — over the internet. It lets businesses run applications without managing physical servers or data centers.</p>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num">~30%</div>
+        <div class="stat-label">Global cloud market share (Q2 2025)</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">200+</div>
+        <div class="stat-label">Fully-featured services globally</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">#1</div>
+        <div class="stat-label">Ahead of Azure (20%) &amp; GCP (13%)</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <strong>Core shift:</strong> AWS introduced an API-driven paradigm where every resource — compute, database, networking — is programmable. This enables event-driven architectures, auto-scaling, and seamless service integrations without constant human intervention.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 2. Architecture -->
+  <section class="section" id="aws-architecture">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+      </div>
+      <h2>AWS layered architecture</h2>
+    </div>
+
+    <p>AWS and other cloud platforms operate as a layered stack — from global infrastructure at the foundation up to domain-specific services at the top. Each layer builds on the one below.</p>
+
+    <div class="layer-stack">
+      <div class="layer l5">
+        <div class="layer-left">
+          <span>🔌</span>
+          <div>
+            <div>Domain-specific &amp; integrations</div>
+            <div class="layer-sub">AI/ML platforms, IoT, analytics, security</div>
+          </div>
+        </div>
+      </div>
+      <div class="layer-arrow">↑ builds on</div>
+      <div class="layer l4">
+        <div class="layer-left">
+          <span>🛠</span>
+          <div>
+            <div>Developer tools &amp; automation</div>
+            <div class="layer-sub">CI/CD pipelines, IaC, monitoring, logging</div>
+          </div>
+        </div>
+      </div>
+      <div class="layer-arrow">↑ builds on</div>
+      <div class="layer l3">
+        <div class="layer-left">
+          <span>📦</span>
+          <div>
+            <div>Managed platform services</div>
+            <div class="layer-sub">Databases, serverless, containers, EKS, analytics</div>
+          </div>
+        </div>
+      </div>
+      <div class="layer-arrow">↑ builds on</div>
+      <div class="layer l2">
+        <div class="layer-left">
+          <span>🖥</span>
+          <div>
+            <div>General compute &amp; storage</div>
+            <div class="layer-sub">EC2, EBS (block storage), S3 (object storage)</div>
+          </div>
+        </div>
+      </div>
+      <div class="layer-arrow">↑ builds on</div>
+      <div class="layer l1">
+        <div class="layer-left">
+          <span>🌐</span>
+          <div>
+            <div>Global infrastructure primitives</div>
+            <div class="layer-sub">Regions, availability zones, networking, IAM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:1rem;">AWS can be treated either as a bare-metal-like substrate for Linux workloads, or as a sophisticated control plane of managed building blocks that minimizes OS management entirely.</p>
+  </section>
+
+  <hr>
+
+  <!-- 3. Key characteristics -->
+  <section class="section" id="key-characteristics">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <h2>Key characteristics &amp; design dimensions</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Service breadth</div>
+        <div class="card-title">200+ services</div>
+        <div class="card-body">Spanning compute, storage, databases, analytics, AI/ML, IoT, and more — enabling end-to-end solutions without third-party tools.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Global infrastructure</div>
+        <div class="card-title">Multi-region, multi-AZ</div>
+        <div class="card-body">Globally distributed regions and AZs for fault-tolerant, low-latency architectures with data sovereignty compliance.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Managed operations</div>
+        <div class="card-title">AWS handles the ops</div>
+        <div class="card-body">Patching, scaling, and backups are AWS's responsibility for managed services — teams focus on business logic, not maintenance.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Cost model</div>
+        <div class="card-title">Pay-as-you-go</div>
+        <div class="card-body">No need to provision for peak capacity. Architectures scale up and down with demand, optimizing cost and performance automatically.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Ecosystem integration</div>
+        <div class="card-title">Seamless service interop</div>
+        <div class="card-body">Data flows efficiently between compute, storage, and analytics — enabling data lakes, event-driven systems, and microservices.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Continuous evolution</div>
+        <div class="card-title">Rapid new releases</div>
+        <div class="card-body">New services and features launch regularly. Architectures must be modular and adaptable to leverage improvements as they arrive.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 4. EKS -->
+  <section class="section" id="eks">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h2>EKS — Elastic Kubernetes Service</h2>
+    </div>
+
+    <p>When Kubernetes became the de facto standard for container orchestration, it also brought significant operational complexity — cluster setup, upgrades, networking, HA. EKS was built to remove that undifferentiated heavy lifting.</p>
+
+    <div class="callout">
+      <strong>EKS in one sentence:</strong> Amazon's managed Kubernetes control plane — delivers upstream-compliant Kubernetes with integrated AWS identity, networking, and scaling, while AWS operates, patches, and scales the control plane components.
+    </div>
+
+    <h3>The two planes</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Control plane — managed by AWS</div>
+        <div class="card-title">API server, etcd, controller manager, scheduler</div>
+        <div class="card-body">
+          Automatically provisioned across 3 AZs for fault tolerance. You interact only via the Kubernetes API endpoint. AWS handles patching, upgrades, and <code>etcd</code> backups. Scales automatically and is fully redundant.
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">Data plane — managed by you</div>
+        <div class="card-title">Worker nodes — EC2 or Fargate</div>
+        <div class="card-body">
+          The actual compute where pods run. You choose: EC2 instances for full control over instance type and scaling, or Fargate (serverless) where AWS provisions compute per pod — no node management at all.
+        </div>
+      </div>
+    </div>
+
+    <h3>Data plane options compared</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label" style="color: var(--success);">EKS on EC2</div>
+        <div class="card-body">Manage EC2 node groups. Full control over instance type, scaling, AMI. Uses the EKS-optimized AMI preconfigured with <code>kubelet</code>, <code>containerd</code>, and VPC CNI. Ideal for performance-sensitive workloads.</div>
+      </div>
+      <div class="card">
+        <div class="card-label" style="color: var(--accent);">EKS on Fargate</div>
+        <div class="card-body">AWS provisions compute automatically per pod. Define Fargate profiles mapping namespaces and labels. No node management. Limits some customization. Best for event-driven or short-lived tasks.</div>
+      </div>
+    </div>
+
+    <h3>Security model</h3>
+    <p>EKS uses a dual-layer security model: <strong>IAM</strong> for cluster-level access control, and standard Kubernetes <strong>RBAC</strong> for in-cluster permissions. The API server endpoint can be public (IAM-secured) or private (VPC-only). <code>etcd</code> is encrypted at rest.</p>
+  </section>
+
+  <hr>
+
+  <!-- 5. EC2 -->
+  <section class="section" id="ec2">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M8 6V4M16 6V4M2 10h20"/></svg>
+      </div>
+      <h2>EC2 &amp; node provisioning</h2>
+    </div>
+
+    <p>Amazon EC2 (Elastic Compute Cloud) provides the raw compute foundation. It's a virtualization service offering resizable compute capacity — you choose instance type (CPU, memory, GPU), storage (EBS), and networking (VPC). EKS builds its worker layer directly on EC2.</p>
+
+    <h3>Node provisioning options</h3>
+    <div class="two-col">
+      <div class="card" style="border-color: var(--success-border);">
+        <div class="card-label" style="color: var(--success);">✓ Managed node groups — recommended</div>
+        <div class="card-body">AWS automatically provisions and manages the EC2 lifecycle. You define instance type, desired capacity, and scaling config. AWS creates the Auto Scaling group, joins instances to the cluster, and handles rolling upgrades with minimal downtime.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Self-managed nodes</div>
+        <div class="card-body">You provision EC2 instances manually (CloudFormation, Terraform) and join them via <code>aws-auth</code> ConfigMap. Maximum control, but full operational responsibility for scaling, health checks, and updates.</div>
+      </div>
+    </div>
+
+    <h3>Node lifecycle &amp; scaling</h3>
+    <ul class="points">
+      <li>Each EC2 worker node runs the <code>kubelet</code> agent — it registers the node, reports status, and ensures pods are running</li>
+      <li>The EKS-optimized AMI includes all required configuration; nodes auto-register when launched with the correct bootstrap parameters</li>
+      <li>The <strong>Cluster Autoscaler</strong> integrates with EC2 Auto Scaling groups — adds nodes when pods are unschedulable, removes them when underutilized</li>
+      <li>Combined with EC2's pay-as-you-go model, this creates a fully elastic compute environment</li>
+    </ul>
+
+    <h3>Networking &amp; security</h3>
+    <ul class="points">
+      <li>The <strong>AWS VPC CNI plugin</strong> assigns IP addresses to pods directly from the VPC's CIDR range — pods are native VPC endpoints</li>
+      <li>No NAT required: traffic stays inside the VPC, making pod-to-AWS-resource communication more secure and efficient</li>
+      <li>Security Groups can be applied per node; network policies restrict pod-to-pod traffic</li>
+      <li>IAM roles on EC2 instances let workloads assume fine-grained permissions to access other AWS resources</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 6. Add-ons -->
+  <section class="section" id="addons">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h2>EKS networking &amp; add-on services</h2>
+    </div>
+
+    <p>Running Kubernetes in production requires more than control and data planes. AWS provides managed add-ons that tie native AWS services into your cluster — configurable automatically through <code>eksctl</code>.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Service / add-on</th>
+            <th>Type</th>
+            <th>What it does</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AWS VPC CNI</td>
+            <td><span class="pill pill-default">Default</span></td>
+            <td>Assigns native VPC IPs to pods; removes need for overlay networks; runs as a DaemonSet</td>
+          </tr>
+          <tr>
+            <td>CoreDNS</td>
+            <td><span class="pill pill-default">Default</span></td>
+            <td>Internal cluster DNS — workloads address each other by service name, not IP; 2 replicas by default</td>
+          </tr>
+          <tr>
+            <td>kube-proxy</td>
+            <td><span class="pill pill-default">Default</span></td>
+            <td>Network routing rules per node; bridges Kubernetes Services and pods for NodePort/LoadBalancer traffic</td>
+          </tr>
+          <tr>
+            <td>Amazon ECR</td>
+            <td><span class="pill pill-default">Default</span></td>
+            <td>Native container registry; auto-integrates with EKS managed node groups — no extra setup required</td>
+          </tr>
+          <tr>
+            <td>Amazon EBS (root)</td>
+            <td><span class="pill pill-default">Default</span></td>
+            <td>Root storage for every EC2 worker node; provisioned and deleted automatically with node lifecycle</td>
+          </tr>
+          <tr>
+            <td>Cluster Autoscaler</td>
+            <td><span class="pill pill-opt">Optional</span></td>
+            <td>Monitors unschedulable pods; adds/removes EC2 nodes in Auto Scaling groups autonomously with proper IAM</td>
+          </tr>
+          <tr>
+            <td>AWS Load Balancer Controller</td>
+            <td><span class="pill pill-opt">Optional</span></td>
+            <td>Enables ALB/NLB, Ingress management, path-based routing, SSL termination (extends built-in CLB support)</td>
+          </tr>
+          <tr>
+            <td>Amazon EBS CSI driver</td>
+            <td><span class="pill pill-opt">Optional</span></td>
+            <td>Persistent block storage volumes for stateful workloads like databases and analytics pipelines</td>
+          </tr>
+          <tr>
+            <td>CloudWatch + Fluent Bit</td>
+            <td><span class="pill pill-opt">Optional</span></td>
+            <td>Fluent Bit DaemonSet ships container logs to CloudWatch; metrics/traces feed dashboards — no external monitoring needed</td>
+          </tr>
+          <tr>
+            <td>AWS Fargate</td>
+            <td><span class="pill pill-opt">Optional</span></td>
+            <td>Serverless data plane; each pod in its own isolated runtime; no EC2/EBS to manage; suits stateless, short-lived workloads</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 7. Org strategy -->
+  <section class="section" id="org-strategy">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <h2>Strategic implications for organizations</h2>
+    </div>
+
+    <ul class="points">
+      <li><strong>Platform engineering mindset:</strong> Manage multiple AWS accounts centrally. Build internal service catalogs, standardized landing zones, CI/CD pipelines, and cost-security guardrails — so teams consume pre-built, compliant capabilities efficiently.</li>
+      <li><strong>Cost governance from day one:</strong> Managed services can scale and proliferate rapidly, making costs easy to miss. Embed cost-tracking, budgeting, and resource tagging from the outset to prevent surprise bills.</li>
+      <li><strong>Security as a first-class citizen:</strong> Implement least-privilege IAM, strong network isolation, encryption in transit and at rest, and continuous audit logging. Integrate these early to avoid friction later in the development lifecycle.</li>
+      <li><strong>Deep observability:</strong> Traditional CPU and memory metrics are not enough. Monitor service interactions, latency, data transfers, and cost anomalies. AWS-native CloudWatch provides these insights without external stacks.</li>
+      <li><strong>Manage vendor lock-in risk:</strong> Deep AWS-native adoption brings efficiency but limits long-term flexibility. Maintain abstraction layers and consider multi-cloud setups where practical to preserve future options.</li>
+      <li><strong>Continuous learning is non-negotiable:</strong> AWS evolves rapidly with new services and best practices. Teams must invest in ongoing certifications, architectural reviews, and training to keep systems efficient and aligned with goals.</li>
+    </ul>
+
+    <div class="callout" style="margin-top: 1rem;">
+      <strong>Key takeaway:</strong> EKS combines default add-ons (VPC CNI, CoreDNS, kube-proxy, ECR, EBS) with optional integrations (Cluster Autoscaler, Load Balancer Controller, EBS CSI, CloudWatch) to deliver a production-ready environment — transforming Kubernetes from a standalone orchestration engine into a unified cloud operations platform.
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

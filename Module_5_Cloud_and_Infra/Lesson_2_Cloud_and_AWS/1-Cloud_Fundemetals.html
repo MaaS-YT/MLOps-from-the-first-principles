@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cloud Fundamentals · MLOps Part 13</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f9f9f8;
+      --surface: #ffffff;
+      --surface-alt: #f3f3f1;
+      --border: #e4e4e0;
+      --border-strong: #ccccc8;
+      --text: #1a1a18;
+      --text-secondary: #5a5a56;
+      --text-muted: #8a8a86;
+      --accent: #2563eb;
+      --accent-bg: #eff6ff;
+      --accent-border: #bfdbfe;
+      --success: #16a34a;
+      --success-bg: #f0fdf4;
+      --success-border: #bbf7d0;
+      --warning: #b45309;
+      --warning-bg: #fffbeb;
+      --warning-border: #fde68a;
+      --purple: #7c3aed;
+      --purple-bg: #f5f3ff;
+      --purple-border: #ddd6fe;
+      --radius: 10px;
+      --font: 'Inter', system-ui, sans-serif;
+      --mono: 'Fira Code', monospace;
+      --max-w: 780px;
+    }
+
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 15px;
+      line-height: 1.7;
+      padding: 2rem 1rem 5rem;
+    }
+
+    .container { max-width: var(--max-w); margin: 0 auto; }
+
+    .header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .header-eyebrow { display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
+    .series-badge {
+      font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent); background: var(--accent-bg); border: 1px solid var(--accent-border);
+      padding: 3px 10px; border-radius: 20px;
+    }
+    h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 600; line-height: 1.25; color: var(--text); margin-bottom: 0.75rem; }
+    .subtitle { font-size: 16px; color: var(--text-secondary); line-height: 1.6; max-width: 700px; }
+
+    .section { margin-bottom: 3rem; }
+    .section-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 1.25rem; }
+    .section-icon {
+      width: 36px; height: 36px; border-radius: 8px; background: var(--accent-bg);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;
+    }
+    .section-icon svg { width: 18px; height: 18px; color: var(--accent); }
+    h2 { font-size: 1.25rem; font-weight: 600; color: var(--text); line-height: 1.3; }
+    h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 0.4rem; margin-top: 1.25rem; }
+    p { color: var(--text-secondary); margin-bottom: 0.75rem; }
+
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 1rem; }
+    .card {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 1rem 1.1rem;
+    }
+    .card-label { font-size: 11px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 5px; }
+    .card-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+    .card-body { font-size: 13px; color: var(--text-secondary); line-height: 1.55; }
+
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 540px) { .two-col { grid-template-columns: 1fr; } }
+
+    .callout {
+      background: var(--accent-bg); border: 1px solid var(--accent-border); border-left: 3px solid var(--accent);
+      border-radius: 8px; padding: 1rem 1.1rem; margin: 1rem 0; font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+    }
+    .callout strong { color: var(--text); }
+
+    .table-wrap { overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius); }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead { background: var(--surface-alt); }
+    th { font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-muted); text-align: left; padding: 9px 14px; border-bottom: 1px solid var(--border); }
+    td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text-secondary); vertical-align: top; line-height: 1.5; }
+    tr:last-child td { border-bottom: none; }
+    td:first-child { font-weight: 500; color: var(--text); white-space: nowrap; }
+    .pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+    .pill-default { background: var(--success-bg); color: var(--success); border: 1px solid var(--success-border); }
+    .pill-opt { background: var(--warning-bg); color: var(--warning); border: 1px solid var(--warning-border); }
+
+    .points { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .points li {
+      font-size: 14px; color: var(--text-secondary); line-height: 1.6;
+      padding: 0.75rem 1rem 0.75rem 2.5rem; position: relative;
+      background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+    }
+    .points li::before {
+      content: ''; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+      width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    }
+    .points li strong { color: var(--text); }
+
+    hr { border: none; border-top: 1px solid var(--border); margin: 2.5rem 0; }
+
+    code { font-family: var(--mono); font-size: 12px; background: var(--surface-alt); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; color: var(--text); }
+
+    .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 1.5rem; }
+    @media (max-width: 480px) { .stats { grid-template-columns: 1fr 1fr; } }
+    .stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; }
+    .stat-num { font-size: 1.6rem; font-weight: 600; color: var(--accent); line-height: 1; margin-bottom: 4px; }
+    .stat-label { font-size: 12px; color: var(--text-muted); }
+
+    .flow-step { display: flex; align-items: flex-start; gap: 16px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; margin-bottom: 10px; }
+    .flow-num { font-weight: 600; color: var(--accent); background: var(--accent-bg); border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 13px; }
+    .flow-content { flex: 1; }
+    .flow-content strong { color: var(--text); }
+
+    .cli-block { background: #1e1e1e; color: #e0e0e0; border-radius: 8px; padding: 1rem 1.2rem; font-family: var(--mono); font-size: 13px; overflow-x: auto; margin: 0.75rem 0; border: 1px solid var(--border-strong); }
+    .cli-block .prompt { color: #6ab0f7; }
+    .cli-block .out { color: #b0b0b0; }
+
+    .footer { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 13px; color: var(--text-muted); text-align: center; }
+
+    .img-placeholder { background: var(--surface-alt); border: 1px dashed var(--border-strong); border-radius: 8px; padding: 1.5rem; text-align: center; color: var(--text-muted); font-size: 13px; margin: 1rem 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-eyebrow">
+      <span class="series-badge">MLOps · Part 13</span>
+    </div>
+    <h1>Cloud Fundamentals</h1>
+    <p class="subtitle">An overview of cloud concepts that matter: virtualization, storage choices, VPC, load balancing, identity, and observability.</p>
+  </header>
+
+  <!-- 1. How the internet works -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h2>Basics: how the internet works</h2>
+    </div>
+    <p>Every cloud solution is built on fundamental networking principles. Let's discuss the most fundamental ones, briefly and abstractly:</p>
+
+    <h3>IP addresses and domain names</h3>
+    <p>Every device connected to the internet requires an IP address. We primarily deal with two types: IPv4 and IPv6. IPv6 was created because IPv4 addresses were running out as the Internet grew. Since humans are not good at remembering long numbers, we use domain names instead. This is where DNS (Domain Name System) comes in, which converts user-friendly domain names into the numerical IP addresses that computers understand.</p>
+
+    <h3>Data movement</h3>
+    <p>When you load a website or send an email, data doesn't move as one big chunk. Your information is broken down into small pieces called <strong>packets</strong>. Each packet carries the data itself, along with crucial information like the destination IP and the source IP. The system managing this transfer is TCP/IP. TCP handles breaking down the data and ensuring it arrives correctly, while IP ensures the packets reach the right destination.</p>
+  </section>
+
+  <hr>
+
+  <!-- 2. Cloud computing: definition and characteristics -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"/></svg>
+      </div>
+      <h2>Cloud computing: definition and characteristics</h2>
+    </div>
+    <p>Cloud computing refers to delivering computing services (e.g., servers, storage, databases, networking, software, analytics) over the internet ("the cloud"), enabling users and organizations to access them on demand. Rather than owning physical hardware, organizations can rent virtualized resources, scale them elastically, and pay only for what they use.</p>
+
+    <h3>NIST essential characteristics</h3>
+    <p>According to NIST (National Institute of Standards and Technology), any cloud system should exhibit the following five essential characteristics:</p>
+    <ul class="points">
+      <li><strong>On-demand self-service</strong> — Users can provision computing capabilities on their own without requiring interaction with the provider's staff.</li>
+      <li><strong>Broad network access</strong> — Services are accessible over the network via standard mechanisms from heterogeneous client platforms.</li>
+      <li><strong>Resource pooling / multi-tenancy</strong> — The provider's resources are pooled to serve multiple consumers, dynamically assigning resources based on demand.</li>
+      <li><strong>Rapid elasticity / scalability</strong> — Capabilities can be elastically scaled up or down to meet fluctuating demands.</li>
+      <li><strong>Measured service (metering)</strong> — Resource usage is monitored, controlled, and reported, enabling pay-per-use models.</li>
+    </ul>
+    <div class="callout">
+      These characteristics help distinguish cloud computing from traditional hosting or fixed-capacity infrastructure.
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 3. Types of models -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M8 2v20M16 2v20M2 8h20M2 16h20"/></svg>
+      </div>
+      <h2>Cloud computing: types of models</h2>
+    </div>
+
+    <h3>Deployment models</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Public cloud</div>
+        <div class="card-body">Services offered over the public internet and shared among multiple tenants.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Private cloud</div>
+        <div class="card-body">Infrastructure dedicated to a single organization, offering more control and isolation.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Hybrid cloud</div>
+        <div class="card-body">Combination of public and private clouds, allowing data/workloads to move between both environments.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Multi-cloud</div>
+        <div class="card-body">Using multiple cloud providers for redundancy, best-of-breed services, or avoiding vendor lock-in.</div>
+      </div>
+    </div>
+
+    <h3>Service models: IaaS, PaaS, SaaS</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Model</th><th>What you manage</th><th>What provider manages</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>IaaS</td><td>OS, runtime, applications, data</td><td>Virtualization, physical infrastructure, networking</td></tr>
+          <tr><td>PaaS</td><td>Applications, data</td><td>OS, runtime, middleware, scaling, patching</td></tr>
+          <tr><td>SaaS</td><td>Just consume</td><td>Everything — fully managed application</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Cloud economics &amp; cost models</h3>
+    <ul class="points">
+      <li><strong>Pay-as-you-go</strong> — pay for actual usage (compute hours, storage size, network in/out).</li>
+      <li><strong>Reserved/committed capacity</strong> — discounts for committing to use resources over a period.</li>
+      <li><strong>Spot/preemptible instances</strong> — very low-cost compute nodes that can be reclaimed (ideal for training or batch workloads).</li>
+      <li><strong>Cost leakage &amp; overprovisioning</strong> — without good governance, unused resources can accumulate costs.</li>
+    </ul>
+    <div class="callout">
+      A good mental model: cloud resources = utility resources (like electricity). You want to scale dynamically and only pay for what you use.
+    </div>
+
+    <h3>Shared responsibility model</h3>
+    <p>In the cloud, security and operational responsibilities are shared between the provider and the user. The provider ensures physical infrastructure, network, host OS, and hypervisor security. The user handles secure configuration of the OS, network rules, application logic, data encryption, IAM, and compliance.</p>
+  </section>
+
+  <hr>
+
+  <!-- 4. Cloud infrastructure components -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+      </div>
+      <h2>Cloud infrastructure components</h2>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-label">⚙️ Compute</div><div class="card-body">Virtual machines, containers, serverless runtimes, GPU/TPU instances</div></div>
+      <div class="card"><div class="card-label">💾 Storage</div><div class="card-body">Object storage, block storage, file systems, data lakes</div></div>
+      <div class="card"><div class="card-label">🌐 Networking</div><div class="card-body">Virtual private network, subnets, routing, NAT, ingress, load balancers</div></div>
+      <div class="card"><div class="card-label">🔐 Identity &amp; Access</div><div class="card-body">IAM roles, groups, policies</div></div>
+      <div class="card"><div class="card-label">📊 Observability</div><div class="card-body">Metrics, logs, traces, dashboards</div></div>
+      <div class="card"><div class="card-label">🛡️ Security &amp; Compliance</div><div class="card-body">Encryption, network segmentation, auditing</div></div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 5. Virtual Machines, hypervisors, virtualization -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M8 4V2M16 4V2M2 8h20"/></svg>
+      </div>
+      <h2>Virtual Machines, hypervisors, and virtualization</h2>
+    </div>
+    <p>At the core of modern cloud computing lies virtualization — the process of creating a virtual version of something, such as a server, storage device, or network resource. Virtualization enables multiple isolated computing environments to coexist on a single physical machine.</p>
+
+    <h3>Hypervisor</h3>
+    <p>A hypervisor, also known as a Virtual Machine Monitor (VMM), is the software layer that sits between the physical hardware and virtual machines. Its primary role is to abstract the physical hardware and allocate computing resources to multiple virtual machines (VMs).</p>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Type 1 — Bare-metal</div>
+        <div class="card-body">Run directly on the host's hardware. Examples: VMware ESXi, Microsoft Hyper-V, KVM, Xen.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Type 2 — Hosted</div>
+        <div class="card-body">Run on top of a host operating system. Examples: Oracle VirtualBox, VMware Workstation, Parallels Desktop.</div>
+      </div>
+    </div>
+
+    <h3>How virtual machines work</h3>
+    <ul class="points">
+      <li><strong>Virtual CPU (vCPU)</strong> — emulates physical CPU cycles allocated from the host.</li>
+      <li><strong>Virtual Memory</strong> — allocated from the host's RAM.</li>
+      <li><strong>Virtual Storage</strong> — uses disk images to emulate storage.</li>
+      <li><strong>Virtual Network Interface</strong> — connects to the virtual or physical network.</li>
+    </ul>
+    <p>Each VM runs its own full operating system (guest OS), which is independent from others. This allows for strong isolation between VMs and the ability to run different OS types on the same hardware.</p>
+
+    <h3>Benefits of VMs</h3>
+    <ul class="points">
+      <li><strong>Isolation</strong> — each VM is sandboxed; failures don't affect others.</li>
+      <li><strong>Resource allocation</strong> — physical resources are efficiently shared and allocated dynamically.</li>
+      <li><strong>VM migration</strong> — VMs can be moved between physical hosts with minimal downtime.</li>
+      <li><strong>Snapshot &amp; cloning</strong> — easy to create snapshots or clone VMs for backup and scalability.</li>
+      <li><strong>Multi-tenancy</strong> — enables multiple users or businesses to share the same physical infrastructure securely.</li>
+    </ul>
+
+    <h3>Limitations of VMs</h3>
+    <ul class="points">
+      <li><strong>Overhead</strong> — each VM runs a full OS, consuming CPU, memory, and storage.</li>
+      <li><strong>Boot time</strong> — VMs typically take longer to boot compared to containers.</li>
+      <li><strong>Resource waste</strong> — unused allocated resources still count as in-use, reducing efficiency.</li>
+      <li><strong>Limited scalability speed</strong> — spinning up or scaling VMs is slower than container-based deployments.</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 6. Containers & orchestration -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+      </div>
+      <h2>Containers &amp; orchestration (Kubernetes)</h2>
+    </div>
+    <ul class="points">
+      <li><strong>Container</strong> — a lightweight packaging of the application + dependencies, running isolated but sharing the host OS kernel.</li>
+      <li><strong>Kubernetes</strong> — an orchestration layer that schedules containers (pods), handles scaling, rolling updates, service discovery, and more.</li>
+      <li><strong>Managed container services</strong> — cloud providers offer managed Kubernetes services: Amazon EKS, Google GKE, Azure AKS. These offer reliability, control-plane maintenance, autoscaling, and integration with cloud tooling.</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 7. Storage systems -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 8h6M9 12h6M9 16h4"/></svg>
+      </div>
+      <h2>Storage systems: Block, Object, File</h2>
+    </div>
+
+    <h3>Object Storage</h3>
+    <p>Cloud object storage (e.g., Amazon S3, Azure Blob, GCS) is built for handling massive amounts of unstructured data. It organizes data as objects, not files within folders. Each object contains three key components: the data itself, metadata, and a unique identifier. There's no concept of nested directories — everything exists in a flat namespace. Access typically happens over HTTP-based APIs.</p>
+    <div class="callout"><strong>Best for:</strong> data lakes, media repositories, log archives, backups, static website hosting. <strong>Trade-offs:</strong> not for transactional workloads, higher latency than block storage, no in-place modification.</div>
+
+    <h3>Block Storage</h3>
+    <p>Block storage (e.g., Amazon EBS, Azure Disk Storage) provides the foundation for high-performance, low-latency workloads. It works by storing data in fixed-size blocks, forming virtual disks that can be mounted to your operating system. Once mounted, the OS formats the block device and manages its own file system.</p>
+    <div class="callout"><strong>Best for:</strong> databases (MySQL, PostgreSQL), OS boot disks, transactional systems. <strong>Trade-offs:</strong> limited capacity per volume, tied to a single compute instance, more expensive per GB than object storage.</div>
+
+    <h3>File Storage / Shared File Systems</h3>
+    <p>File storage (e.g., Amazon EFS, Azure Files, NFS, SMB) provides a familiar way to store and access data: as files organized in folders. It uses a hierarchical structure of directories and files, supporting traditional file system semantics such as permissions, locks, and shared access.</p>
+    <div class="callout"><strong>Best for:</strong> shared project directories, enterprise home folders, content management systems, ML pipelines with shared datasets. <strong>Trade-offs:</strong> performance varies with network throughput, more expensive and less scalable than object storage.</div>
+
+    <h3>Databases and warehouses</h3>
+    <p>Databases and data warehouses (e.g., MySQL, PostgreSQL, MongoDB, Snowflake, BigQuery, Redshift) sit one layer above raw storage systems. They don't just store data but rather give it structure, meaning, and accessibility. They provide query languages, transactions, indexing, concurrency control, and schema enforcement.</p>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Object Storage</div>
+        <div class="card-body">Most scalable and cost-effective for unstructured or archival data.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Block Storage</div>
+        <div class="card-body">Best for performance-sensitive workloads requiring low latency and frequent updates.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">File Storage</div>
+        <div class="card-body">Useful when multiple systems need to share files with traditional file system semantics.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Databases &amp; Warehouses</div>
+        <div class="card-body">Higher abstraction layer for structured data and complex queries.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 8. Networking in the cloud -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h2>Networking in the cloud</h2>
+    </div>
+    <p>Cloud networking forms the backbone of all communication between compute, storage, and external users. Unlike traditional on-premise data centers, cloud networks are software-defined, meaning every aspect of connectivity can be configured programmatically.</p>
+
+    <h3>VPC (Virtual Private Cloud) / Virtual Network</h3>
+    <p>A VPC is essentially your private, customizable network inside a cloud provider's infrastructure. It lets you carve out a dedicated portion of the provider's massive network and define how your resources connect within it. Inside a VPC, you can define your IP address range, create subnets to organize and isolate workloads, and control connectivity.</p>
+    <div class="callout"><strong>Main goal:</strong> isolation and control. Ensure workloads are separated from others, while still giving full control over traffic flow and security.</div>
+
+    <h3>Subnets and availability zones</h3>
+    <p>Subnets divide your VPC into smaller, manageable sections with their own routing rules and accessibility level. Cloud providers divide each region into multiple Availability Zones (AZs) — physically separate data centers that operate independently. By distributing workloads across multiple AZs, you eliminate single points of failure.</p>
+
+    <h3>Load Balancers and API Gateways</h3>
+    <ul class="points">
+      <li><strong>Load Balancer (LB)</strong> — distributes incoming requests across multiple compute instances or containers, ensuring no single resource becomes a bottleneck. Adds fault tolerance and boosts performance.</li>
+      <li><strong>API Gateway</strong> — sits at the entry point of your architecture. Routes client requests, manages authentication, enforces rate limits, and performs caching or request transformation.</li>
+    </ul>
+
+    <h3>Networking architecture example for ML deployment</h3>
+    <div class="flow-step">
+      <div class="flow-num">1</div>
+      <div class="flow-content"><strong>Users / Clients</strong> — send inference requests to your model endpoint.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">2</div>
+      <div class="flow-content"><strong>API Gateway</strong> — handles authentication, routing, and rate limiting.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">3</div>
+      <div class="flow-content"><strong>Load Balancer</strong> — distributes traffic across multiple inference servers.</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">4</div>
+      <div class="flow-content"><strong>Inference Servers</strong> — access model artifacts from object storage (S3, Blob Storage).</div>
+    </div>
+    <div class="flow-step">
+      <div class="flow-num">5</div>
+      <div class="flow-content"><strong>VPC</strong> — isolates the entire setup. Subnets separate public-facing components from private ones.</div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 9. Identity & IAM -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      </div>
+      <h2>Identity &amp; IAM</h2>
+    </div>
+    <p>IAM is a framework for managing identities, roles, and permissions. It defines who can access which resources and what actions they're allowed to perform.</p>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Users</div>
+        <div class="card-body">Individual identities — people or systems that need to interact with cloud resources.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Groups</div>
+        <div class="card-body">Collections of users with similar responsibilities — manage permissions collectively.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Roles</div>
+        <div class="card-body">Define what actions can be performed — can be temporarily assumed by users, applications, or services.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Policies</div>
+        <div class="card-body">Actual rules governing access — JSON documents specifying what's allowed or denied on specific resources.</div>
+      </div>
+    </div>
+
+    <h3>Service roles and roles for Pods</h3>
+    <ul class="points">
+      <li><strong>Service Roles</strong> — cloud services like EC2, Lambda, or Vertex AI can be assigned roles directly, allowing them to access resources like databases or secret managers without embedding credentials in code.</li>
+      <li><strong>Roles for Pods (EKS)</strong> — individual pods can assume specific IAM roles that grant only the permissions they need. Provides fine-grained access control, credential isolation, and reduced risk exposure.</li>
+    </ul>
+
+    <h3>Security groups / Firewall rules</h3>
+    <p>Security groups act as virtual firewalls attached to your cloud resources, controlling what traffic gets in and what goes out. Inbound rules determine which external requests can reach your instance, while outbound rules define which destinations your resources can connect to.</p>
+    <div class="callout"><strong>Principle of least privilege:</strong> every identity should have only the permissions it absolutely needs and nothing more. This minimizes the attack surface and makes compliance audits straightforward.</div>
+  </section>
+
+  <hr>
+
+  <!-- 10. Monitoring, logging, observability -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4 4l2 2M18 18l2 2M4 20l2-2M18 6l2-2M2 12h4M18 12h4"/></svg>
+      </div>
+      <h2>Monitoring, logging, observability</h2>
+    </div>
+    <p>Observability is the backbone of trustworthy production systems, providing the necessary insight to maintain reliability and performance. It encompasses the collection and analysis of metrics and telemetry data, such as CPU usage, memory consumption, disk I/O, and network activity.</p>
+    <ul class="points">
+      <li><strong>Metrics</strong> — CPU, memory, disk I/O, network activity, GPU usage.</li>
+      <li><strong>Logs</strong> — application logs, system logs, audit logs.</li>
+      <li><strong>Traces</strong> — end-to-end request tracing for debugging latency issues.</li>
+    </ul>
+    <p>Centralized tools like Prometheus, Grafana, and CloudWatch play a crucial role in aggregating, visualizing, and managing this data effectively.</p>
+  </section>
+
+  <hr>
+
+  <!-- 11. Why use Cloud for ML -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2>Why use Cloud for ML?</h2>
+    </div>
+
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">📈 Scalability &amp; elasticity</div>
+        <div class="card-body">Horizontal scaling — add or remove compute nodes dynamically. Vertical scaling — increase or decrease the size or capacity of a single machine.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">💰 Cost efficiency</div>
+        <div class="card-body">Pay-as-you-go, spot instances, reserved instances, auto-scaling policies. Only pay for what you use.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🧩 Managed ecosystem</div>
+        <div class="card-body">Integrated, managed services for storage, compute orchestration, model lifecycle, monitoring, and logging.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">🛡️ High availability &amp; redundancy</div>
+        <div class="card-body">Multiple regions and availability zones. Deploy across zones for resilience and disaster recovery.</div>
+      </div>
+    </div>
+  </section>
+
+  <hr>
+
+  <!-- 12. Patterns for ML workloads -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      </div>
+      <h2>Patterns for ML workloads in Cloud</h2>
+    </div>
+
+    <h3>Training vs Inference vs Batch</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Training</div>
+        <div class="card-body">Compute-hungry, often distributed across GPUs/TPUs. Heavy I/O for large datasets. Runs for hours or days.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Real-time inference</div>
+        <div class="card-body">Low latency, high concurrency, predictable tail performance. Autoscaling and model versioning critical.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Batch inference</div>
+        <div class="card-body">Throughput matters, speed per request doesn't. Runs on ephemeral clusters or spot instances.</div>
+      </div>
+    </div>
+
+    <h3>Data pipelines &amp; storage</h3>
+    <ul class="points">
+      <li><strong>Raw data</strong> — ingested into staging area (S3, Blob Storage).</li>
+      <li><strong>Validation &amp; transformation</strong> — deduplication, quality checks, feature engineering.</li>
+      <li><strong>Storage</strong> — raw/processed data in object storage; high-throughput training datasets in block storage; feature stores for low-latency lookups.</li>
+    </ul>
+
+    <h3>Model Registry &amp; versioning</h3>
+    <ul class="points">
+      <li><strong>Model Registry</strong> — single source of truth for model artifacts. Tracks weights, hyperparameters, environment details, dataset versions.</li>
+      <li><strong>Lifecycle</strong> — registering, staging, promoting to production, rolling back.</li>
+      <li><strong>Auditability</strong> — record training code, library versions, serialized formats, input/output schemas.</li>
+    </ul>
+
+    <h3>Inference serving patterns</h3>
+    <div class="cards">
+      <div class="card">
+        <div class="card-label">Serverless inference</div>
+        <div class="card-body">Ideal for small models or unpredictable workloads. Autoscales automatically. Trade-off: cold starts, limited memory.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Container-based microservices</div>
+        <div class="card-body">Go-to for production-grade deployments. Full control over runtime. Managed via Kubernetes and model servers like TorchServe or Triton.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Edge inference</div>
+        <div class="card-body">For ultra-low-latency use cases. Models quantized, pruned, or converted to ONNX, deployed to edge devices.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Batch scoring</div>
+        <div class="card-body">Periodic analytics or re-scoring historical data. Runs on distributed compute frameworks like Spark or Ray.</div>
+      </div>
+    </div>
+
+    <h3>Autoscaling</h3>
+    <ul class="points">
+      <li><strong>Horizontal Pod Autoscaling (HPA)</strong> — adjusts replica counts based on CPU, memory, or custom metrics.</li>
+      <li><strong>GPU autoscaling</strong> — combines cluster autoscalers with GPU-aware schedulers.</li>
+      <li><strong>Predictive scaling</strong> — for predictable traffic surges, maintain warm pools or preemptively spin up replicas.</li>
+    </ul>
+
+    <h3>Deployment strategies</h3>
+    <div class="two-col">
+      <div class="card">
+        <div class="card-label">Blue-Green</div>
+        <div class="card-body">Deploy new version to parallel environment; switch traffic after validation. Zero-downtime.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Canary Deployments</div>
+        <div class="card-body">Route small percentage of traffic to new model; monitor metrics before wider rollout.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">A/B Testing</div>
+        <div class="card-body">Experiment with different models for feature/metric comparison.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Shadow Deployment</div>
+        <div class="card-body">New model receives production traffic but responses are for internal evaluation only.</div>
+      </div>
+    </div>
+
+    <h3>Monitoring and Detection</h3>
+    <ul class="points">
+      <li><strong>Model quality</strong> — accuracy, AUC, precision/recall, task-specific metrics.</li>
+      <li><strong>Data &amp; prediction drift</strong> — input feature distributions, population shifts, prediction distribution changes.</li>
+      <li><strong>Resource &amp; performance</strong> — latency percentiles, throughput, GPU/CPU/memory, disk usage and error rates.</li>
+    </ul>
+
+    <h3>Reproducibility &amp; auditability</h3>
+    <ul class="points">
+      <li><strong>Traceability</strong> — record and link training dataset versions, preprocessing code, hyperparameters, random seeds, evaluation metrics.</li>
+      <li><strong>Reproducibility</strong> — capture runtime environments (Docker images, conda/pip lockfiles), snapshot datasets or store dataset hashes.</li>
+      <li><strong>Auditability</strong> — capture access logs and model actions for audits, ensure sensitive data handling complies with regulations.</li>
+    </ul>
+  </section>
+
+  <hr>
+
+  <!-- 13. Conclusion -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      </div>
+      <h2>Conclusion</h2>
+    </div>
+    <ul class="points">
+      <li><strong>Cloud computing</strong> forms the foundation for scalable and efficient ML deployment through flexible deployment, service, and responsibility models.</li>
+      <li>A clear understanding of <strong>cloud infrastructure, networking, and IAM</strong> is crucial for building secure and well-managed ML pipelines.</li>
+      <li><strong>Load balancing and scalability</strong> are key players in maintaining performance and reliability by distributing workload evenly across multiple servers.</li>
+      <li><strong>Storage choices</strong> (object, block, file, databases) must match workload characteristics — throughput, access patterns, concurrency, and cost.</li>
+      <li><strong>Observability</strong> — metrics, logs, and traces — is essential for maintaining production-grade ML systems.</li>
+      <li><strong>Reproducibility and auditability</strong> require rigorous tracking of datasets, code, environments, and deployment history.</li>
+    </ul>
+  </section>
+
+  <div class="footer">
+    <span>Cloud Fundamentals · MLOps Part 13</span>
+  </div>
+
+</div>
+</body>
+</html>

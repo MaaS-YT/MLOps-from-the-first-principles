@@ -1,0 +1,3 @@
+pruning/data/
+pruning/*.pth
+pruning/*.pkl

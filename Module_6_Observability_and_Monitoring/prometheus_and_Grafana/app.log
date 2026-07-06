@@ -1,0 +1,8 @@
+2026-07-03 20:07:19,971 - app - INFO - Appended 100 requests to request_log.csv
+2026-07-03 20:07:19,971 - app - INFO - Processed batch of 100 predictions
+2026-07-03 20:07:20,983 - app - INFO - Loaded 100 existing requests from request_log.csv
+2026-07-03 20:07:23,485 - app - INFO - Drift report generated with 100 requests. Drift detected: True, Drifted columns: 2.0
+2026-07-03 20:08:01,350 - app - INFO - Appended 100 requests to request_log.csv
+2026-07-03 20:08:01,350 - app - INFO - Processed batch of 100 predictions
+2026-07-03 20:08:02,361 - app - INFO - Loaded 200 existing requests from request_log.csv
+2026-07-03 20:08:02,932 - app - INFO - Drift report generated with 200 requests. Drift detected: True, Drifted columns: 2.0

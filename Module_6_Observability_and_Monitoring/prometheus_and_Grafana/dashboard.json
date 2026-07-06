@@ -1,0 +1,1082 @@
+{
+  "__inputs": [],
+  "annotations": {
+    "list": []
+  },
+  "description": "Monitoring dashboard for ML prediction service with Prometheus metrics",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "hideControls": false,
+  "id": null,
+  "links": [],
+  "panels": [
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        }
+      },
+      "height": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "hideTimeOverride": false,
+      "id": 1,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Request Metrics",
+      "transparent": false,
+      "transformations": [],
+      "collapsed": false,
+      "panels": [],
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": ""
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 0,
+        "y": 1
+      },
+      "hideTimeOverride": false,
+      "id": 2,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "prediction_requests_total",
+          "query": "prediction_requests_total",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Total Requests",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Prediction Requests",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": ""
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 8,
+        "y": 1
+      },
+      "hideTimeOverride": false,
+      "id": 3,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "rate(prediction_requests_total[1m])",
+          "query": "rate(prediction_requests_total[1m])",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Requests/sec",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Request Rate (req/s)",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": ""
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 8,
+        "x": 16,
+        "y": 1
+      },
+      "hideTimeOverride": false,
+      "id": 4,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "rate(starlette_requests_total[1m])",
+          "query": "rate(starlette_requests_total[1m])",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{status}} - {{method}} {{path_template}}",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "HTTP Status Codes",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        }
+      },
+      "height": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "hideTimeOverride": false,
+      "id": 5,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Latency Metrics",
+      "transparent": false,
+      "transformations": [],
+      "collapsed": false,
+      "panels": [],
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "hideTimeOverride": false,
+      "id": 6,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "rate(prediction_latency_seconds_sum[1m]) / rate(prediction_latency_seconds_count[1m])",
+          "query": "rate(prediction_latency_seconds_sum[1m]) / rate(prediction_latency_seconds_count[1m])",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Avg Latency (s)",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Average Prediction Latency",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "hideTimeOverride": false,
+      "id": 7,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.50, rate(prediction_latency_seconds_bucket[1m]))",
+          "query": "histogram_quantile(0.50, rate(prediction_latency_seconds_bucket[1m]))",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "p50",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(prediction_latency_seconds_bucket[1m]))",
+          "query": "histogram_quantile(0.95, rate(prediction_latency_seconds_bucket[1m]))",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "p95",
+          "metric": "",
+          "refId": "B",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        },
+        {
+          "expr": "histogram_quantile(0.99, rate(prediction_latency_seconds_bucket[1m]))",
+          "query": "histogram_quantile(0.99, rate(prediction_latency_seconds_bucket[1m]))",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "p99",
+          "metric": "",
+          "refId": "C",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Latency Percentiles",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        }
+      },
+      "height": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 18
+      },
+      "hideTimeOverride": false,
+      "id": 8,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "System Metrics",
+      "transparent": false,
+      "transformations": [],
+      "collapsed": false,
+      "panels": [],
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": 0,
+          "max": 100,
+          "decimals": null,
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 19
+      },
+      "hideTimeOverride": false,
+      "id": 9,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "system_cpu_usage",
+          "query": "system_cpu_usage",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "CPU %",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "CPU Usage",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": 0,
+          "max": 100,
+          "decimals": null,
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 19
+      },
+      "hideTimeOverride": false,
+      "id": 10,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "system_memory_usage",
+          "query": "system_memory_usage",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "Memory %",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Memory Usage",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": null,
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          }
+        }
+      },
+      "height": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "hideTimeOverride": false,
+      "id": 11,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Request Duration Distribution",
+      "transparent": false,
+      "transformations": [],
+      "collapsed": false,
+      "panels": [],
+      "type": "row"
+    },
+    {
+      "cacheTimeout": null,
+      "datasource": "prometheus",
+      "description": null,
+      "editable": true,
+      "error": false,
+      "fieldConfig": {
+        "defaults": {
+          "thresholds": {
+            "mode": "absolute",
+            "steps": []
+          },
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisPlacement": "auto",
+            "axisLabel": "",
+            "drawStyle": "line",
+            "lineInterpolation": "linear",
+            "barAlignment": 0,
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "spanNulls": false,
+            "showPoints": "auto",
+            "pointSize": 5,
+            "stacking": {},
+            "scaleDistribution": {
+              "type": "linear",
+              "log": 2
+            },
+            "hideFrom": {
+              "tooltip": false,
+              "viz": false,
+              "legend": false
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            },
+            "axisSoftMin": null,
+            "axisSoftMax": null
+          },
+          "mappings": [],
+          "min": null,
+          "max": null,
+          "decimals": null,
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "height": null,
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "hideTimeOverride": false,
+      "id": 12,
+      "interval": null,
+      "links": [],
+      "maxDataPoints": 100,
+      "minSpan": null,
+      "repeat": null,
+      "repeatDirection": null,
+      "maxPerRow": null,
+      "span": null,
+      "targets": [
+        {
+          "expr": "rate(starlette_request_duration_seconds_sum[1m]) / rate(starlette_request_duration_seconds_count[1m])",
+          "query": "rate(starlette_request_duration_seconds_sum[1m]) / rate(starlette_request_duration_seconds_count[1m])",
+          "target": "",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 2,
+          "legendFormat": "{{method}} {{path_template}}",
+          "metric": "",
+          "refId": "A",
+          "step": 10,
+          "instant": false,
+          "datasource": null
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Request Duration by Endpoint",
+      "transparent": false,
+      "transformations": [],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom",
+          "calcs": []
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "10s",
+  "rows": [],
+  "schemaVersion": 12,
+  "sharedCrosshair": false,
+  "style": "dark",
+  "tags": [
+    "fastapi",
+    "ml",
+    "monitoring",
+    "prometheus"
+  ],
+  "templating": {
+    "list": []
+  },
+  "title": "FastAPI Monitoring - Prediction Service",
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ],
+    "nowDelay": null,
+    "hidden": false
+  },
+  "timezone": "browser",
+  "version": 0,
+  "uid": null
+}

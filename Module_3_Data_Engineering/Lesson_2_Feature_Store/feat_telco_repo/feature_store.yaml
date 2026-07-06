@@ -1,0 +1,12 @@
+project: telco_churn                  # Name of the feature store project
+registry: "registry.db"               # Local registry file (metadata store)
+provider: local                       # Running locally (not cloud)
+
+offline_store:
+  type: file                          # Offline store uses local files (e.g., parquet/csv)
+
+online_store:
+  type: sqlite                        # Online store for low-latency serving
+  path: "online_store.db"             # SQLite DB file path
+
+entity_key_serialization_version: 3   # Feast internal compatibility setting

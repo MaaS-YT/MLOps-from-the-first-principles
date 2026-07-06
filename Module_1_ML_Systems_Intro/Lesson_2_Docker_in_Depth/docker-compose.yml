@@ -1,0 +1,26 @@
+services:
+
+  app:
+    build: .                         # builds from ./Dockerfile
+    container_name: iris-api
+    ports:
+      - "3000:3000"                  # host:container
+    environment:
+      REDIS_URL: redis://redis:6379  # "redis" resolves via Docker's internal DNS
+    depends_on:
+      - redis
+    networks:
+      - ml-net
+
+  redis:
+    image: redis:7-alpine            # official image — no build step needed
+    container_name: iris-cache
+    networks:
+      - ml-net
+
+networks:
+  ml-net:
+    driver: bridge
+    # Both containers share this network.
+    # "redis" hostname resolves to the Redis container automatically —
+    # Docker's built-in DNS, no hardcoded IPs.

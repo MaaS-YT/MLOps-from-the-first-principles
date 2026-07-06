@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: k-demo-dep
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: k-demo
+  template:
+    metadata:
+      labels:
+        app: k-demo
+    spec:
+      containers:
+        - name: k-demo
+          image: k-demo
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80

@@ -1,0 +1,19 @@
+# For at a fixed time
+
+# deployments:
+#   - name: daily-train
+#     entrypoint: example.py:training_pipeline
+#     work_pool:
+#       name: local-process
+#     schedule:
+#       cron: "36 1 * * *" # every day at 01:36 AM (change as per your need to simulate an automated run)
+#       timezone: "Asia/Kolkata" # change as per your timezone
+
+# For every 30 seconds
+deployments:
+  - name: frequent-train
+    entrypoint: example.py:training_pipeline
+    work_pool:
+      name: local-process
+    schedule:
+      interval: 30 # every 30 seconds (change as per your need to simulate an automated run)

@@ -1,0 +1,5 @@
+# CMake build output — run build.sh to regenerate
+build/
+
+# Trained model binary — run train_and_save.py to regenerate
+model.pt
