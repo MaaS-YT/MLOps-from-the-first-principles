@@ -11,6 +11,23 @@ Open this repo alongside the lectures — not instead of them.
 
 ---
 
+## 🔗 **Part of SAiR MLOps Blueprint**
+
+This repo is the **theory track** of the SAiR MLOps module.
+
+| Resource | Link |
+|---|---|
+| **Hub Repo** | [SAIR-Org/SAiR-MLOps-Blueprint](https://github.com/SAIR-Org/SAiR-MLOps-Blueprint) |
+| **Implementation Track** | [SAIR-Org/SAiRCAMP_1](https://github.com/SAIR-Org/SAiRCAMP_1) |
+| **YouTube Theory Playlist** | [MLOps from First Principles](https://youtube.com/playlist?list=PLVM9Nqm8zLE0&si=jtIah3TJB8PjOMgu) |
+
+**Use this repo for:** Understanding the concepts, mental models, and theory behind MLOps.
+**Use SAIRCAMP for:** Building the end-to-end production system.
+
+> 📌 **Take both tracks together** — watch the theory, then build it live.
+
+---
+
 ## What This Repo Is
 
 The lectures demonstrate. This repo explains.
@@ -303,6 +320,19 @@ This repo is the written half of the course. The video lecture series is the vis
 
 > **When the video moves fast:** slow down here.
 > **When a guide feels abstract:** watch the demo.
+
+---
+
+## 📚 **Where This Fits in SAIR Jr.**
+
+```
+Module 4 — Applied Deep Learning     ✅   github.com/SAIR-Org/SAIR_Jr
+Module 5 — GPT from Scratch          ✅   github.com/SAIR-Org/SAIR_Jr
+Module 6 — MLOps  ← you are here          github.com/SAIR-Org/SAiR-MLOps-Blueprint
+  ├── DDODS                         (theory, standalone repo) ← YOU ARE HERE
+  └── SAIRCAMP                      (live builds, standalone repo)
+Capstone — Real-World Impact Project      github.com/SAIR-Org/SAIR_Jr
+```
 
 ---
 
