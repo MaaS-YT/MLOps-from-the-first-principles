@@ -74,3 +74,4 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo
+# Large dataset files\n*.ubyte\n*.gz\n*.zip\n*.tar\n*.tar.gz\n*.parquet\n\n# Data directories\ndata/\n*/data/
