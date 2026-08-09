@@ -11,6 +11,15 @@
 
 ---
 
+> **Note on language:** Lesson 1.1 built the model API in FastAPI (Python). This lesson
+> deliberately switches to Node.js. The goal here is Docker itself, not another Python
+> demo — and using a different language proves the point that the `Dockerfile` pattern
+> (copy manifest → install deps → copy source → CMD) is identical regardless of what's
+> running inside. Everything you learn here — layer caching, networking, Compose —
+> applies unchanged to the FastAPI service from 1.1.
+
+---
+
 # Docker Crash Course — Concepts & Guide
 
 Demo: `Dockerfile`, `docker-compose.yml`, `server.js` — Node.js Iris prediction API + Redis prediction cache.
@@ -18,7 +27,7 @@ Demo: `Dockerfile`, `docker-compose.yml`, `server.js` — Node.js Iris predictio
 ---
 
 ## Part 1 — Why Containers Exist
-
+...
 ### The environment problem
 
 Software runs inside an environment. That environment includes:

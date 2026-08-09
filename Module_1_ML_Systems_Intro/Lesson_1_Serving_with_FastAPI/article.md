@@ -6,7 +6,7 @@
 |---|---|
 | **Problem this solves** | A trained model sitting in a notebook delivers no value. Getting it into a running service that other systems can call is the first engineering problem in the ML lifecycle. |
 | **Mental model** | Think of your model as a function: `f(features) → prediction`. Production ML is the engineering work of making that function callable, reliable, versioned, and monitorable at scale. |
-| **What the lecture demonstrates** | Training a simple classifier → wrapping it in a FastAPI endpoint → containerizing it with Docker → calling it like any other web service |
+| **What the lecture demonstrates** | A conceptual walkthrough — no code here. This article covers *why* production ML is a systems problem: the MLOps lifecycle, drift, latency, reproducibility. For the hands-on build (train → FastAPI → Docker → call the API), see `FASTAPI_DOCKER_GUIDE.md`. |
 | **Where this fits** | This module builds the **Serving Layer** in the system map — the last step the model reaches before it delivers value. Everything else in the course feeds into this layer. |
 
 ---

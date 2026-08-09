@@ -87,7 +87,7 @@ The pattern is universal — you'll find it in every well-built API, ML or other
 ```
 1. Notebook model      no interface, no reuse, no deployment
 2. Saved artifact      .pkl file — reusable in Python, still not a service
-3. REST API            any client, any language → predictions    ← you are here
+3. REST API             any client, any language → predictions    ← you are here
 4. Containerized API   same API, runs identically everywhere     ← and here
 5. Load-balanced API   multiple replicas, auto-scaling
 6. Monitored API       log predictions, detect drift, alert on anomalies
@@ -242,6 +242,10 @@ docker run -p 5000:8000 iris-api
 `localhost:5000` on your machine → forwarded to → port `8000` inside the container.
 They don't have to be the same number.
 
+> This is enough Docker to get the service running. For what's actually happening
+> under the hood — image layers, container networking, multi-service orchestration
+> with Compose — see Lesson 1.2, "Docker in Depth."
+
 ---
 
 ## Part 4 — The Three-File Pattern
@@ -345,3 +349,6 @@ docker build -t iris-api .   # rebuild to pick up new model
 - Pydantic: https://docs.pydantic.dev
 - Docker: https://docs.docker.com
 - Uvicorn: https://www.uvicorn.org
+```
+
+Both files are ready to drop in as-is. With these two edits, Module 1's three guides now cross-reference correctly: `article.md` → concepts only, points to the guide; `FASTAPI_DOCKER_GUIDE.md` → minimal working build, points forward to 1.2; `docker_commands.md` → deep infrastructure dive, points back to 1.1.
