@@ -49,14 +49,14 @@ Read in order. Each rung assumes only what came before.
 
 | Step | Guide | What you learn |
 |------|-------|----------------|
-| 01 | [Why Virtual Environments Exist](01_virtual_env.md) | The dependency problem, from first principles |
-| 02 | [Enter `uv`](02_uv.md) | The modern tool that makes venvs fast and reproducible |
-| 03 | [Build the Training Pipeline](03_training_pipeline.md) | Python training job, running in a venv |
-| 04 | [Why Containers Exist](04_why_containers.md) | The same problem, one level up |
-| 05 | [Dockerize the Training Job](05_dockerize_training.md) | Same script, now inside an image |
-| 06 | [Serving — A Second Image](06_serving.md) | Node.js API, its own image, its own language |
-| 07 | [Wiring Containers by Hand](07_networking.md) | Networks, DNS, volumes — no Compose yet |
-| 08 | [Docker Compose](08_compose.md) | The whole system, declared in one file |
+| 01 | [Why Virtual Environments Exist](01-virtual-env.md) | The dependency problem, from first principles |
+| 02 | [Enter `uv`](02-uv.md) | The modern tool that makes venvs fast and reproducible |
+| 03 | [Build the Training Pipeline](03-training-pipeline.md) | Python training job, running in a venv |
+| 04 | [Why Containers Exist](04-why-container.md) | The same problem, one level up |
+| 05 | [Dockerize the Training Job](05-dockerize-training.md) | Same script, now inside an image |
+| 06 | [Serving — A Second Image](06-serving.md) | Node.js API, its own image, its own language |
+| 07 | [Wiring Containers by Hand](07-network.md) | Networks, DNS, volumes — no Compose yet |
+| 08 | [Docker Compose](08-compose.md) | The whole system, declared in one file |
 
 **After step 08:** return here for the [Quick Start](#quick-start) and [Where It Fits](#where-it-fits).
 
@@ -69,8 +69,11 @@ Read in order. Each rung assumes only what came before.
 ```bash
 # From Lesson_2_Docker_in_Depth/
 
-# 1. Train the model (Python container)
-docker compose run --rm training
+# 0. Create the output directory (bind mounts need the host path to exist)
+mkdir -p training/output
+
+# 1. Train the model (one-off, uses the "train" profile)
+docker compose --profile train run --rm training
 
 # 2. Bring up serving + redis
 docker compose up --build
@@ -87,6 +90,16 @@ curl -X POST http://localhost:3000/predict \
 
 # 5. Check hit rate
 curl http://localhost:3000/stats
+
+# 6. Tear down
+docker compose down
+```
+
+Verify the artifact was produced, owned by you:
+
+```bash
+ls -la training/output/
+# -rw-r--r-- 1 silva silva 2113 ... model.joblib
 ```
 
 ---
@@ -126,10 +139,11 @@ If you've only seen Docker used with Python, this lesson exists to break that as
 
 | Path | Purpose |
 |------|---------|
-| `01_*.md` … `08_*.md` | The ladder — read in order |
+| `01-virtual-env.md` … `08-compose.md` | The ladder — read in order |
 | [`training/`](training/) | Python training job (uv-managed, containerized) |
+| [`training/output/`](training/output/) | Where the container writes `model.joblib` |
 | [`serving/`](serving/) | Node.js prediction API (containerized) |
-| [`docker-compose.yml`](docker-compose.yml) | Wires serving + redis as a multi-service system |
+| [`docker-compose.yml`](docker-compose.yml) | Wires training + serving + redis |
 | [`docker_commands.md`](docker_commands.md) | Reference: containers vs VMs, Dockerfile internals |
 
 ---
@@ -139,12 +153,15 @@ If you've only seen Docker used with Python, this lesson exists to break that as
 | Term | Definition |
 |------|------------|
 | **Virtual environment** | Isolated Python `site-packages`. Shares interpreter and OS with host. |
+| **uv** | Fast Python package and project manager. Replaces pip, venv, pip-tools. |
 | **Image** | Read-only template with app + dependencies. Built from a Dockerfile. |
 | **Container** | Running instance of an image. A process with isolated filesystem/network. |
 | **Layer** | Cached filesystem diff produced by a Dockerfile instruction. |
 | **Namespace** | Linux kernel feature giving a process its own view of pid/net/mnt/uts. |
 | **cgroup** | Linux kernel feature capping CPU/memory for a process group. |
-| **Volume** | Host-managed storage that outlives a container. |
+| **Bind mount** | Host directory mapped into a container. Two-way. Ownership-sensitive. |
+| **Named volume** | Docker-managed storage that outlives a container. |
 | **Bridge network** | User-defined Docker network. Provides DNS between containers. |
 | **Port mapping** | `host:container` — exposes a container port on the host. |
 | **Compose** | Declarative multi-container definition in YAML. |
+| **Profile** | Compose feature — a service that only starts when explicitly requested. |

@@ -60,12 +60,13 @@ Nothing new. Just **declared instead of typed**.
 
 Training is a one-off job, not a long-running service. We don't want it to start with `docker compose up`.
 
-Two consequences of step 05's lessons:
+Three consequences of step 05's lessons carry over:
 
 1. **It writes an artifact to the host** — so it needs a volume, and `OUTPUT_DIR` to tell `train.py` where to write.
 2. **It must run as your user** — otherwise `model.joblib` comes out root-owned.
+3. **It needs a writable home** — otherwise `uv` tries to write its cache to `/` and gets `Permission denied`.
 
-Both carry over from the manual `docker run`. Compose just declares them.
+All three are the same flags we typed by hand. Compose just declares them.
 
 Use a **profile** so training doesn't start with the main system:
 
@@ -76,6 +77,7 @@ Use a **profile** so training doesn't start with the main system:
       - ./training/output:/out
     environment:
       OUTPUT_DIR: /out
+      HOME: /tmp
     user: "${UID:-1000}:${GID:-1000}"
     profiles: ["train"]
 ```
@@ -84,6 +86,7 @@ Use a **profile** so training doesn't start with the main system:
 |------|-----------------------|
 | `volumes: ./training/output:/out` | `-v "$PWD/output:/out"` |
 | `environment: OUTPUT_DIR: /out` | `-e OUTPUT_DIR=/out` |
+| `environment: HOME: /tmp` | `-e HOME=/tmp` |
 | `user: "${UID:-1000}:${GID:-1000}"` | `--user "$(id -u):$(id -g)"` |
 | `profiles: ["train"]` | (Compose-only — not a docker run flag) |
 
@@ -91,7 +94,14 @@ Three things to note:
 
 **`${UID:-1000}`** reads the shell's `UID` variable, defaulting to `1000` if unset. On most Linux systems, `UID` is set automatically. On macOS, it's not — hence the fallback. Either way, the container runs as you.
 
-**No `-e HOME=/tmp`.** In step 05 we needed it because `uv` writes a cache and looks for `$HOME`. But when Compose runs a service as `user: 1000:1000`, the container still has `/tmp` writable and `uv` falls back gracefully. If you hit a `$HOME` error, add `environment: HOME: /tmp` here.
+**`HOME: /tmp` matters.** In step 05 we set it on the `docker run` command line. Compose needs the same declaration. Without it, `uv` tries to write its cache to `/.cache/uv` — the container's root filesystem, which UID 1000 can't write to. The result is:
+
+```
+error: Failed to initialize cache at `/.cache/uv`
+Caused by: failed to create directory `/.cache/uv`: Permission denied (os error 13)
+```
+
+Setting `HOME: /tmp` gives `uv` a writable home. The cache lives in `/tmp/.cache/uv`, dies with the container, and no one notices. The `uv` warning about "hardlinks falling back to full copy" is also expected — the cache and the mounted output live on different filesystems, so `uv` copies instead of hardlinking. Slower, still correct.
 
 **`profiles: ["train"]`** means this service only starts when explicitly requested. `docker compose up` ignores it. `docker compose --profile train run --rm training` runs it.
 
@@ -114,6 +124,7 @@ services:
       - ./training/output:/out
     environment:
       OUTPUT_DIR: /out
+      HOME: /tmp
     user: "${UID:-1000}:${GID:-1000}"
     profiles: ["train"]
 
@@ -159,6 +170,7 @@ volumes:
 | `--user "$(id -u):$(id -g)"` | `user: "${UID:-1000}:${GID:-1000}"` |
 | `-v "$PWD/output:/out"` | `volumes: - ./training/output:/out` |
 | `-e OUTPUT_DIR=/out` | `environment: OUTPUT_DIR: /out` |
+| `-e HOME=/tmp` | `environment: HOME: /tmp` |
 
 Compose is a **transcription** of the manual commands. Not a new concept — a new syntax.
 
@@ -214,6 +226,7 @@ That's the whole system. Two containers running, wired together, reachable from 
 | No version control for topology | `docker-compose.yml` in git |
 | Can't reproduce on another machine | Clone + `docker compose up` |
 | Root-owned files from `-v` | Declared `user:` fixes it |
+| `$HOME` errors from `uv` | Declared `HOME:` fixes it |
 
 Same pattern as `uv`. **Declare, don't type.**
 
@@ -318,6 +331,7 @@ You should now be able to answer:
 
 - **What does Compose replace?** All the manual `docker network`, `docker volume`, and `docker run` commands.
 - **How does the training service map to step 05's `docker run`?** `volumes:` → `-v`, `environment:` → `-e`, `user:` → `--user`.
+- **Why `HOME: /tmp`?** Without it, `uv` tries to cache to `/.cache/uv`, which UID 1000 can't write to. The container fails with `Permission denied`.
 - **Why `profiles: ["train"]`?** So training doesn't start with the main system — it's a one-off, not a service.
 - **Why `mkdir -p training/output` before running?** Bind mounts need the host path to exist.
 - **What's the relationship between Compose and Kubernetes?** Same declarative shape, different scale.

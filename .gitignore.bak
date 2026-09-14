@@ -1,0 +1,86 @@
+# ── Python ────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# ── Virtual environments ─────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Jupyter ───────────────────────────────────────────────────────
+.ipynb_checkpoints/
+
+# ── Node ──────────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ── Environment / secrets ────────────────────────────────────────
+.env
+.env.*
+secrets.*
+
+# ── ML tracking run data ─────────────────────────────────────────
+# Generated locally when you run experiments.
+# Viewers should re-run the notebooks to produce their own.
+mlruns/
+**/wandb/run-*/
+**/wandb/latest-run
+**/wandb/debug*.log
+
+# ── Trained model binaries ───────────────────────────────────────
+# Regenerate by running the demo.
+*.pth
+*.pt
+*.pkl
+*.ckpt
+*.joblib
+*.onnx
+*.onnx.data
+
+# ── Large datasets ────────────────────────────────────────────────
+# MNIST and other raw datasets are downloaded by the notebooks.
+**/data/MNIST/
+**/raw/
+*.ubyte
+*.ubyte.gz
+*.tar
+*.tar.gz
+*.zip
+
+# ── DVC ───────────────────────────────────────────────────────────
+# DVC manages its own data — source files live in the DVC remote.
+# The .dvc pointer files ARE committed (they're small text files).
+# Nothing to ignore here; listed for documentation.
+
+# ── Local output directories ──────────────────────────────────────
+# Lesson-specific: where containers and scripts write artifacts.
+Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/training/output/
+Module_3_Data_Engineering/Lesson_1_Data_Pipelines/out/
+
+# ── Installers ────────────────────────────────────────────────────
+*.deb
+
+# ── Logs ──────────────────────────────────────────────────────────
+app.log
+*.log
+
+# ── OS ────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo

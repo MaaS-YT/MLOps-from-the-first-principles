@@ -150,6 +150,7 @@ flowchart TD
 | **During the lecture** | Open the module guide and follow along. The guide provides the conceptual anchor for what the lecture is demonstrating. |
 | **After the lecture** | Return to the deep-dive sections. The content goes further than the video to give you the full picture. |
 | **For reference** | `SYSTEM_MAP.md` shows where every piece fits. Reconnects isolated concepts to the whole system. |
+| **For progressive lessons** | Some lessons (e.g., 1.2 Docker) are structured as a **ladder** — a series of small guides read in order. Start at the lesson `README.md`, not at the code. |
 
 ---
 
@@ -161,7 +162,7 @@ flowchart TD
 | Lesson | Topic | Guide | Status |
 |--------|-------|-------|--------|
 | 1.1 | [Serving with FastAPI](Module_1_ML_Systems_Intro/Lesson_1_Serving_with_FastAPI/) | [FASTAPI_DOCKER_GUIDE.md](Module_1_ML_Systems_Intro/Lesson_1_Serving_with_FastAPI/FASTAPI_DOCKER_GUIDE.md) | ✓ |
-| 1.2 | [Docker in Depth](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/) | [docker_commands.md](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/docker_commands.md) | ✓ |
+| 1.2 | [Docker in Depth](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/) | [README.md](Module_1_ML_Systems_Intro/Lesson_2_Docker_in_Depth/README.md) — start here, then walk the ladder (01 → 08) | ✓ |
 
 </details>
 
@@ -287,7 +288,7 @@ Grafana (for visualization)
 
 | Module | Technologies |
 |--------|--------------|
-| 1 | FastAPI, Docker, Docker Compose |
+| 1 | FastAPI, uv, Docker, Docker Compose |
 | 2 | Git, DVC, MLflow, Weights & Biases |
 | 3 | Feast, Prefect, Spark, Pandas |
 | 4 | Pruning, Quantization, KD, ONNX, TorchScript, LibTorch, gRPC |

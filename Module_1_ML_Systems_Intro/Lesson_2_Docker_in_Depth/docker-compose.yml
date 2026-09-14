@@ -1,64 +1,24 @@
-
-# ---------------------------------------------------------------------------
-# Iris prediction system — declared, not typed.
-#
-# Every block here maps to a command from step 07 of the lesson:
-#   docker network create ml-net         → networks: ml-net
-#   docker volume create redis-data      → volumes: redis-data
-#   docker run ... redis:7-alpine        → services.redis
-#   docker run ... iris-api              → services.serving
-#
-# And the training service maps to step 05's full docker run command:
-#   --user "$(id -u):$(id -g)"           → user: "${UID:-1000}:${GID:-1000}"
-#   -v "$PWD/output:/out"                → volumes: ./training/output:/out
-#   -e OUTPUT_DIR=/out                   → environment: OUTPUT_DIR: /out
-#   --rm                                 → docker compose run --rm
-#
-#   docker compose up --build            replaces all of the above.
-# ---------------------------------------------------------------------------
-
 services:
 
-  # --- Training (one-off, opt-in via `--profile train`) --------------------
-  # Not started by `docker compose up`. Run explicitly:
-  #   docker compose --profile train run --rm training
-  #
-  # Produces ./training/output/model.joblib on the host, owned by you.
-  training:
-    build: ./training
-    volumes:
-      - ./training/output:/out
-    environment:
-      OUTPUT_DIR: /out
-      HOME: /tmp
-    user: "${UID:-1000}:${GID:-1000}"
-    profiles: ["train"] 
-    
-  # --- Serving API ---------------------------------------------------------
   serving:
     build: ./serving
     container_name: iris-api
     ports:
-      - "3000:3000"          # host:container — publish to the outside world
+      - "3000:3000"
     environment:
-      # Injected at runtime. "redis" resolves via Docker's embedded DNS on
-      # the ml-net bridge. No IPs, no /etc/hosts.
       REDIS_URL: redis://redis:6379
     depends_on:
       - redis
     networks:
       - ml-net
 
-  # --- Redis cache ---------------------------------------------------------
   redis:
-    image: redis:7-alpine    # official image — no build step
+    image: redis:7-alpine
     container_name: iris-cache
     volumes:
-      - redis-data:/data     # named volume — cache survives container restarts
+      - redis-data:/data
     networks:
       - ml-net
-    # NOTE: no `ports:` block. Redis is intentionally not published to the
-    # host. Only services on ml-net can reach it. This is the correct default.
 
 networks:
   ml-net:

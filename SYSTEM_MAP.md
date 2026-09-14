@@ -108,6 +108,7 @@ Keep it open across all lectures. Every lesson adds one layer.
   ── INFRASTRUCTURE ──────────────────────────────────────────────────────────
 
   [Lesson 1.2]  Docker       Everything containerized. No "works on my machine."
+                             venv → uv → container → image → network → Compose.
 
   [Lesson 3.3]  Prefect      Schedules and monitors the entire pipeline.
                              Retries failures. Alerts on anomalies.
@@ -220,7 +221,7 @@ Keep it open across all lectures. Every lesson adds one layer.
 | Lesson | What Gets Added | Where in the Diagram | Status |
 |--------|----------------|----------------------|--------|
 | 1.1 | Serving API (FastAPI) + first container | Serving Layer | ✓ |
-| 1.2 | Docker depth: images, networking, Compose | Infrastructure | ✓ |
+| 1.2 | Docker from first principles: venv → uv → containers → images → networks → Compose | Infrastructure | ✓ |
 | 2.1 | DVC versioning for data + models | Versioning Layer | ✓ |
 | 2.2 | MLflow: structured run logs + model registry | Training Layer | ✓ |
 | 2.3 | W&B: cloud tracking + artifact lineage | Training Layer | ✓ |
@@ -252,6 +253,7 @@ the exact data, code, parameters, and environment that produced it.
 | Version data alongside code | DVC — Lesson 2.1 |
 | Log every experiment parameter and artifact | MLflow — Lesson 2.2, W&B — Lesson 2.3 |
 | Containerize the environment | Docker — Lesson 1.2 |
+| Isolate Python packages per project | uv — Lesson 1.2 |
 
 ### Problem 2 — Consistency
 *"The model behaves differently in training than in production."*
@@ -266,6 +268,7 @@ and fail silently in production.
 | One feature definition for training and serving | Feast — Lesson 3.2 |
 | Enforce temporal cutoffs during feature engineering | Data Pipeline — Lesson 3.1 |
 | Version models that training and serving both reference | DVC + Registry — Lessons 2.1–2.3 |
+| Run the same environment everywhere | Docker — Lesson 1.2 |
 
 ### Problem 3 — Scalability
 *"It works on my laptop but fails on production data."*
@@ -467,8 +470,22 @@ a human mistake from shipping a broken model?"
 
 | Term | One Line |
 |------|---------|
+| **Virtual environment** | Isolated Python `site-packages`. Shares interpreter and OS with host. |
+| **uv** | Fast Python package and project manager. Replaces pip, venv, pip-tools. |
+| **pyproject.toml** | Declares a Python project's dependencies and metadata. |
+| **uv.lock** | Pins exact versions of every dependency, including transitive ones. |
 | **Container** | A packaged app + its dependencies that runs identically anywhere |
 | **Image** | The blueprint a container is built from |
+| **Dockerfile** | The recipe that builds an image. Instructions become layers. |
+| **Layer** | A cached filesystem diff produced by a Dockerfile instruction |
+| **Namespace** | Linux kernel feature giving a process its own view of pid/net/mnt/uts |
+| **cgroup** | Linux kernel feature capping CPU/memory for a process group |
+| **Bind mount** | Host directory mapped into a container. Two-way, ownership-sensitive. |
+| **Named volume** | Docker-managed storage that outlives a container |
+| **Bridge network** | User-defined Docker network. Provides DNS between containers. |
+| **Port mapping** | `host:container` — exposes a container port on the host |
+| **Compose** | Declarative multi-container definition in YAML |
+| **Profile** | Compose feature — a service that only starts when explicitly requested |
 | **DVC** | Git for data — tracks what data was used for each code commit |
 | **Experiment run** | One training execution with logged params, metrics, and artifacts |
 | **Model registry** | A versioned catalog that promotes models from staging to production |
