@@ -16,10 +16,10 @@ Keep it open across all lectures. Every lesson adds one layer.
   │                        DATA LAYER                            │
   │                                                              │
   │  Raw Sources                                                 │
-  │  ┌────────────┐  ┌────────────┐  ┌────────────────────┐    │
-  │  │  CSV files  │  │  JSON logs │  │  SQL / databases   │    │
-  │  └─────┬──────┘  └─────┬──────┘  └─────────┬──────────┘    │
-  │        └───────────────┼─────────────────────┘              │
+  │  ┌────────────┐  ┌────────────┐  ┌────────────────────┐      │
+  │  │  CSV files │ │  JSON logs│ │  SQL / databases      │      │
+  │  └─────┬──────┘  └─────┬──────┘  └─────────┬──────────┘      │
+  │        └───────────────┼─────────────────────┘               │
   │                        │  [Lesson 3.1]                       │
   │                        ▼                                     │
   │              Data Pipeline                                   │
@@ -50,18 +50,18 @@ Keep it open across all lectures. Every lesson adds one layer.
   │  Training Run            │      │  Prediction API                  │
   │  [Lessons 2.2–2.3]       │      │  [Lesson 1.1]                    │
   │                          │      │                                  │
-  │  ┌────────────────────┐  │      │  ┌──────────────────────────┐   │
-  │  │ Experiment Tracker │  │      │  │ FastAPI                  │   │
-  │  │ (MLflow / W&B)     │  │      │  │                          │   │
-  │  │                    │  │      │  │ POST /predict            │   │
-  │  │ • params logged    │  │      │  │  → fetch features        │   │
-  │  │ • metrics logged   │  │      │  │  → load model            │   │
-  │  │ • model artifact   │  │      │  │  → return prediction     │   │
-  │  └─────────┬──────────┘  │      │  └──────────────────────────┘   │
-  │            │              │      │           │                      │
-  │  Model Registry           │      │  Docker Container [Lesson 1.2] │
-  │  (staging → production)   │      │  Same env everywhere           │
-  └────────────┬──────────────┘      └──────────────────────────────────┘
+  │  ┌────────────────────┐  │      │  ┌──────────────────────────┐    │
+  │  │ Experiment Tracker │  │      │  │ FastAPI                  │    │
+  │  │ (MLflow / W&B)     │  │      │  │                          │    │
+  │  │                    │  │      │  │ POST /predict            │    │
+  │  │ • params logged    │  │      │  │  → fetch features        │    │
+  │  │ • metrics logged   │  │      │  │  → load model            │    │
+  │  │ • model artifact   │  │      │  │  → return prediction     │    │
+  │  └─────────┬──────────┘  │      │  └──────────────────────────┘    │
+  │            │             │      │           │                      │
+  │  Model Registry          │      │  Docker Container [Lesson 1.2]   │
+  │  (staging → production)  │      │  Same env everywhere             │
+  └────────────┬─────────────┘      └──────────────────────────────────┘
                │
                │  [Lesson 2.1]
                ▼
@@ -81,7 +81,7 @@ Keep it open across all lectures. Every lesson adds one layer.
                │  [Lesson 4.1]
                ▼
   ┌──────────────────────────────────────────────────┐
-  │     OPTIMIZATION LAYER                            │
+  │     OPTIMIZATION LAYER                           │
   │                                                  │
   │  Pruning → Quantization → Distillation → ONNX    │
   │                                                  │
@@ -92,7 +92,7 @@ Keep it open across all lectures. Every lesson adds one layer.
                        │  [Lesson 4.2]
                        ▼
   ┌──────────────────────────────────────────────────┐
-  │     SERVING TRANSPORT LAYER                       │
+  │     SERVING TRANSPORT LAYER                      │
   │                                                  │
   │  TorchScript   Compile model → portable IR       │
   │                No Python needed at runtime       │
@@ -101,7 +101,7 @@ Keep it open across all lectures. Every lesson adds one layer.
   │                torch::jit::load()                │
   │                                                  │
   │  gRPC          Serve over binary RPC             │
-  │                Protobuf contract, HTTP/2          │
+  │                Protobuf contract, HTTP/2         │
   │                Lower latency than REST           │
   └──────────────────────────────────────────────────┘
 
@@ -120,15 +120,15 @@ Keep it open across all lectures. Every lesson adds one layer.
 
   ┌──────────────────────────────────────────────────────────────────────┐
   │                                                                      │
-  │  Lesson 5.1 — Kubernetes (Kind → EKS/GKE/AKS)                       │
+  │  Lesson 5.1 — Kubernetes (Kind → EKS/GKE/AKS)                        │
   │                                                                      │
   │  ┌────────────────────────────────────────────────────────────────┐  │
-  │  │                     Kubernetes Cluster                          │  │
+  │  │                     Kubernetes Cluster                         │  │
   │  │  ┌──────────────────────────────────────────────────────────┐  │  │
   │  │  │                    Control Plane                         │  │  │
-  │  │  │  API Server  │  etcd  │  Scheduler  │  Controller Mgr   │  │  │
+  │  │  │  API Server  │  etcd  │  Scheduler  │  Controller Mgr    │  │   
   │  │  └──────────────────────────────────────────────────────────┘  │  │
-  │  │                              │                                   │  │
+  │  │                              │                                    │  │
   │  │  ┌──────────────────────────────────────────────────────────┐  │  │
   │  │  │                    Worker Nodes                          │  │  │
   │  │  │  ┌───────────────┐  ┌───────────────┐  ┌────────────┐  │  │  │
@@ -173,7 +173,7 @@ Keep it open across all lectures. Every lesson adds one layer.
   ── OBSERVABILITY LAYER (Module 6) ────────────────────────────────────────
 
   ┌─────────────────────────────────────────────────────────────────────────┐
-  │                      OBSERVABILITY STACK                                 │
+  │                      OBSERVABILITY STACK                                │
   │                                                                         │
   │  ┌──────────────────────────────────────────────────────────────────┐   │
   │  │  EVIDENTLY (Lesson 6.1)                                          │   │
@@ -184,20 +184,20 @@ Keep it open across all lectures. Every lesson adds one layer.
   │  └──────────────────────────────────────────────────────────────────┘   │
   │                                                                         │
   │  ┌──────────────────────────────────────────────────────────────────┐   │
-  │  │  PROMETHEUS + GRAFANA (Lesson 6.2)                              │   │
+  │  │  PROMETHEUS + GRAFANA (Lesson 6.2)                               │   │
   │  │  • Metrics export: latency, request count, error rates           │   │
-  │  │  • System metrics: CPU usage, memory usage                      │   │
-  │  │  • Time-series DB: Prometheus scrapes every 15s                 │   │
-  │  │  • Dashboards: Grafana visualizes trends and anomalies          │   │
-  │  │  • Alerts: configured on threshold breaches                     │   │
+  │  │  • System metrics: CPU usage, memory usage                       │   │
+  │  │  • Time-series DB: Prometheus scrapes every 15s                  │   │
+  │  │  • Dashboards: Grafana visualizes trends and anomalies           │   │
+  │  │  • Alerts: configured on threshold breaches                      │   │
   │  └──────────────────────────────────────────────────────────────────┘   │
   │                                                                         │
   │  ┌──────────────────────────────────────────────────────────────────┐   │
   │  │  INTEGRATION PATTERN                                             │   │
   │  │  • request_log.csv stores all predictions                        │   │
   │  │  • Evidently analyzes historical logs for drift                  │   │
-  │  │  • Prometheus scrapes /metrics endpoint                         │   │
-  │  │  • Grafana shows combined view: metrics + drift                 │   │
+  │  │  • Prometheus scrapes /metrics endpoint                          │   │
+  │  │  • Grafana shows combined view: metrics + drift                  │   │
   │  └──────────────────────────────────────────────────────────────────┘   │
   └─────────────────────────────────────────────────────────────────────────┘
 
@@ -423,12 +423,12 @@ The system improves continuously because each flow feeds the next.
 ```
                         ┌────────────────┐
                         │  Module 6      │ Observability & Monitoring
-                        │  (Lessons 6.1–2)│ Evidently + Prometheus/Grafana
+                        │ (Lessons 6.1–2)│Evidently + Prometheus/Grafana
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
                         │  Module 5      │ Cloud and Infrastructure
-                        │  (Lessons 5.1–2)│ Kubernetes + AWS (EKS)
+                        │ (Lessons 5.1–2)│ Kubernetes + AWS (EKS)
                         └──────┬─────────┘
                                │
                         ┌──────┴─────────┐
