@@ -1,3 +1,4 @@
+
 # MLOps from First Principles
 
 ![Status](https://img.shields.io/badge/status-complete-brightgreen.svg)
@@ -150,7 +151,7 @@ flowchart TD
 | **During the lecture** | Open the module guide and follow along. The guide provides the conceptual anchor for what the lecture is demonstrating. |
 | **After the lecture** | Return to the deep-dive sections. The content goes further than the video to give you the full picture. |
 | **For reference** | `SYSTEM_MAP.md` shows where every piece fits. Reconnects isolated concepts to the whole system. |
-| **For progressive lessons** | Some lessons (e.g., 1.2 Docker) are structured as a **ladder** — a series of small guides read in order. Start at the lesson `README.md`, not at the code. |
+| **For progressive lessons** | Some lessons (e.g., 1.2 Docker, 2.1–2.3) are structured as a **ladder** — a series of small guides read in order. Start at the lesson `README.md`, not at the code. |
 
 ---
 
@@ -171,9 +172,9 @@ flowchart TD
 
 | Lesson | Topic | Guide | Status |
 |--------|-------|-------|--------|
-| 2.1 | [Data & Model Versioning — DVC](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/) | [DVC_GUIDE.md](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/DVC_GUIDE.md) | ✓ |
-| 2.2 | [Experiment Tracking — MLflow](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/) | [README.md](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/README.md) | ✓ |
-| 2.3 | [Experiment Tracking — W&B](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/) | [WANDB_GUIDE.md](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/WANDB_GUIDE.md) | ✓ |
+| 2.1 | [Data & Model Versioning — DVC](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/) | [README.md](Module_2_Reproducibility/Lesson_1_Data_and_Model_Versioning/README.md) — start here, then walk the ladder (01 → 05) | ✓ |
+| 2.2 | [Experiment Tracking — MLflow](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/) | [README.md](Module_2_Reproducibility/Lesson_2_Experiment_Tracking_MLflow/README.md) — start here, then walk the ladder (01 → 04) | ✓ |
+| 2.3 | [Experiment Tracking — W&B](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/) | [README.md](Module_2_Reproducibility/Lesson_3_Experiment_Tracking_WandB/README.md) — start here, then walk the ladder (01 → 05) | ✓ |
 
 </details>
 
