@@ -1,0 +1,5 @@
+outs:
+- md5: 4a1073c07decf66c925d0a4e1b583165
+  size: 15722103
+  hash: md5
+  path: sample_nyc_taxi.csv

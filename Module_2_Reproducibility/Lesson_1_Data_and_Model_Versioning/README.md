@@ -80,11 +80,6 @@ Read the five rungs in order. Each assumes the previous.
 
 **Start with rung 01.** Don't skip to the commands. The commands only make sense once the problem is clear.
 
-**Reference:** [`DVC_GUIDE.md`](DVC_GUIDE.md) — commands and flags only.
-**Board:** [`dvc-ladder.excalidraw`](dvc-ladder.excalidraw) — the visual companion.
-
----
-
 ## The Five-Step Progression
 
 Where DVC sits in the longer arc of data versioning:
@@ -182,7 +177,6 @@ DVC                 Docker   MLflow  MLflow  W&B
 | File | Purpose |
 |------|---------|
 | `01-the-data-problem.md` … `05-the-bigger-picture.md` | The five rungs — read in order |
-| [`DVC_GUIDE.md`](DVC_GUIDE.md) | Reference: commands, flags, docs links |
 | [`version-project/`](version-project/) | The working git+DVC demo (a full project) |
 | [`version-project/sample/data.csv`](version-project/sample/data.csv) | The versioned dataset |
 | [`version-project/sample/data.csv.dvc`](version-project/sample/data.csv.dvc) | The pointer file that lives in git |
@@ -231,8 +225,6 @@ You should now be able to answer:
 **For a first read:** open rung 01 and walk the ladder in order. Don't skip to the commands.
 
 **For the demo:** follow the Quick Start above, then read rung 03 for the line-by-line walkthrough.
-
-**For reference:** the Key Terms table above and [`DVC_GUIDE.md`](DVC_GUIDE.md).
 
 ---
 
