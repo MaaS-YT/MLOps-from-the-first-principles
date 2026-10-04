@@ -9,20 +9,22 @@
 `version-project/sample/` is a minimal but complete DVC project. Its git history tells a deliberate story.
 
 ```
-14d6a51  init git and dvc         → project initialized, DVC set up
-72cd2ff  Add sample script        → sample-code.py added (reads the CSV)
-a164b3f  add data and track dvc   → data.csv (3 rows) tracked for the first time
-99ed495  config the local remote  → mock-remote configured as DVC remote
-3d104de  added new row            → data.csv updated to 4 rows, new .dvc hash recorded
+<hash>  init git and dvc                  → project initialized, DVC set up
+<hash>  Add sample script                 → sample-code.py added (reads the CSV)
+<hash>  add data and track data with dvc  → data.csv (3 rows) tracked for the first time
+<hash>  config the local remote           → mock-remote configured as DVC remote
+<hash>  added new row                     → data.csv updated to 4 rows, new .dvc hash recorded
 ```
 
-The two meaningful commits are `a164b3f` and `3d104de`. Each represents a dataset version. **The `.dvc` file in git is the version marker.**
+Run `git log --oneline` inside `sample/` to see the actual hashes.
+
+The two meaningful commits are the ones with messages **"add data and track data with dvc"** and **"added new row"**. Each represents a dataset version. **The `.dvc` file in git is the version marker.**
 
 ---
 
 ## The `.dvc` file at each version
 
-**Version 1** (commit `a164b3f`):
+**Version 1** — the commit with message `add data and track data with dvc`:
 
 ```yaml
 outs:
@@ -31,7 +33,7 @@ outs:
   path: data.csv
 ```
 
-**Version 2** (commit `3d104de`, current):
+**Version 2** — the commit with message `added new row` (current `HEAD`):
 
 ```yaml
 outs:
@@ -59,6 +61,8 @@ Intentionally minimal. This represents any ML script that reads data. The point:
 
 ## Walk the demo
 
+**Prerequisite:** the venv lives in `version-project/`. Every DVC command must run through it. From inside `sample/`, that means `uv run --project .. dvc <command>`.
+
 ```bash
 cd version-project/sample
 
@@ -83,21 +87,21 @@ Four rows. This is version 2.
 git log --oneline
 ```
 
-Output:
+Output (hashes will vary):
 
 ```
-3d104de added new row
-99ed495 config the local remote
-a164b3f add data and track dvc
-72cd2ff Add sample script
-14d6a51 init git and dvc
+<hash> added new row
+<hash> config the local remote
+<hash> add data and track data with dvc
+<hash> Add sample script
+<hash> init git and dvc
 ```
 
-Now go back to version 1:
+Now go back to version 1. Find the hash of the commit that says `add data and track data with dvc`:
 
 ```bash
-git checkout a164b3f
-dvc checkout
+git checkout <that-hash>
+uv run --project .. dvc checkout
 cat data.csv
 ```
 
@@ -115,8 +119,8 @@ Three rows. **Version 1 restored.** The `.dvc` file at this commit pointed to `m
 Come back to the latest version:
 
 ```bash
-git checkout main
-dvc checkout
+git checkout master
+uv run --project .. dvc checkout
 cat data.csv
 ```
 
@@ -146,14 +150,75 @@ The script that reads the data — `sample-code.py` — never changed. Only the 
 
 ---
 
+## Quick Reference
+
+The commands you'll use most.
+
+### Set up a new DVC project
+
+```bash
+git init
+dvc init
+git commit -m "init dvc"
+```
+
+### Track a file
+
+```bash
+dvc add data/mydata.csv          # creates data/mydata.csv.dvc, updates .gitignore
+git add data/mydata.csv.dvc .gitignore
+git commit -m "track dataset v1"
+```
+
+### Configure a remote
+
+```bash
+dvc remote add myremote s3://my-bucket/dvc-store
+dvc remote default myremote
+git add .dvc/config
+git commit -m "configure dvc remote"
+```
+
+### Push and pull
+
+```bash
+dvc push      # upload data to remote
+dvc pull      # download data from remote (after git clone or git checkout)
+```
+
+### Switch to a previous data version
+
+```bash
+git checkout <commit-hash>    # restores the .dvc pointer file
+dvc checkout                  # restores the actual data file to match
+```
+
+### Check what's tracked
+
+```bash
+dvc status    # are local files in sync with .dvc files?
+dvc diff      # what changed between commits?
+```
+
+### Official documentation
+
+- DVC concepts: https://dvc.org/doc/user-guide/concepts
+- Get started: https://dvc.org/doc/start
+- Data versioning: https://dvc.org/doc/start/data-management
+- Remotes: https://dvc.org/doc/user-guide/data-management/remote-storage
+- DVC + git: https://dvc.org/doc/user-guide/how-it-works
+
+---
+
 ## Checkpoint
 
 You should now be able to answer:
 
-- **What are the two meaningful commits?** `a164b3f` (version 1, 3 rows) and `3d104de` (version 2, 4 rows).
+- **What are the two meaningful commits?** The commit with message `add data and track data with dvc` (version 1, 3 rows) and the commit with message `added new row` (version 2, 4 rows).
 - **What changes in git between the two versions?** Only the hash inside `data.csv.dvc`.
-- **What does `git checkout a164b3f` alone do?** Restores the `.dvc` pointer. The data on disk is still version 2.
+- **What does `git checkout <v1-hash>` alone do?** Restores the `.dvc` pointer. The data on disk is still version 2 until you run `dvc checkout`.
 - **What does `dvc checkout` do after that?** Reads the pointer and restores the matching data from the cache.
 - **What's the complete operation to switch data versions?** `git checkout <commit>` + `dvc checkout`.
+- **Why `uv run --project ..`?** The demo's git repo lives in `sample/`, but the venv lives one level up.
 
 **Next:** [Key Concepts →](04-key-concepts.md)

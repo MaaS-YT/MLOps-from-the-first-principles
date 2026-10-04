@@ -60,7 +60,7 @@ In this lesson's demo, the remote is a local directory (`mock-remote/`) simulati
 [core]
     remote = local_remote
 ['remote "local_remote"']
-    url = ../../../mock-remote
+    url = ../../mock-remote
 ```
 
 - `dvc push` — upload from local cache → remote.
@@ -75,28 +75,49 @@ This is where git and DVC work together as one system.
 The demo has two commits, each with a different version of `data.csv`:
 
 ```
-commit a164b3f  "add data and track data with dvc"
+commit <hash>  "add data and track data with dvc"
   data.csv.dvc → md5: bbd304...   (3 rows: id=1, 2, 3)
 
-commit 3d104de  "added new row"
+commit <hash>  "added new row"
   data.csv.dvc → md5: 1a2dc4...   (4 rows: id=1, 2, 3, 5)
 ```
+
+The actual hashes are dynamic — read them from `git log --oneline`.
 
 To go back to version 1:
 
 ```bash
-git checkout a164b3f    # .dvc file now points to md5: bbd304...
-dvc checkout            # DVC reads the .dvc file, restores data.csv to 3 rows
+# Find the hash of the commit that added the data
+git log --oneline
+# → look for the commit with message "add data and track data with dvc"
+
+git checkout <that-hash>   # .dvc file now points to the v1 hash
+dvc checkout               # DVC reads the .dvc file, restores data.csv to 3 rows
 ```
 
 To come back to version 2:
 
 ```bash
-git checkout main       # .dvc file now points to md5: 1a2dc4...
-dvc checkout            # data.csv restored to 4 rows
+git checkout master        # .dvc file now points to the v2 hash
+dvc checkout               # data.csv restored to 4 rows
 ```
 
 You never manage which CSV file is which version by hand. **Git commit + `dvc checkout` is the complete operation.**
+
+---
+
+## Running DVC in this lesson
+
+The `sample/` directory is a nested git repo inside the `version-project/` uv project. So every `dvc` command needs to run through the parent's venv:
+
+```bash
+# From inside version-project/sample/
+uv run --project .. dvc status
+uv run --project .. dvc checkout
+uv run --project .. dvc push
+```
+
+The `--project ..` flag tells `uv` to use the venv at `version-project/.venv/`. Without it, `uv` walks up to the DDODS workspace and gets confused.
 
 ---
 
@@ -109,5 +130,6 @@ You should now be able to answer:
 - **What does `dvc checkout` do?** Reads the current `.dvc` file and restores the matching data.
 - **What does `dvc push` do?** Uploads new data from the cache to the remote.
 - **What's the triune here?** `.dvc` → hash + remote → checked-out data. Definition → artifact → instance.
+- **Why `uv run --project ..`?** The demo's git repo lives in `sample/`, but the venv lives one level up.
 
 **Next:** [The Demo Walkthrough →](03-the-demo-walkthrough.md)
