@@ -112,9 +112,9 @@ But they also **diagnose**. When something breaks, look at the chain and find th
 
 | # | Lesson | Guide | Length |
 |---|--------|-------|--------|
-| 2.1 | [Data & Model Versioning — DVC](Lesson_1_Data_and_Model_Versioning/) | [`DVC_GUIDE.md`](Lesson_1_Data_and_Model_Versioning/DVC_GUIDE.md) | 5 parts |
-| 2.2 | [Experiment Tracking — MLflow](Lesson_2_Experiment_Tracking_MLflow/) | [`README.md`](Lesson_2_Experiment_Tracking_MLflow/README.md) | 4 parts |
-| 2.3 | [Experiment Tracking — W&B](Lesson_3_Experiment_Tracking_WandB/) | [`WANDB_GUIDE.md`](Lesson_3_Experiment_Tracking_WandB/WANDB_GUIDE.md) | 5 parts |
+| 2.1 | [Data & Model Versioning — DVC](Lesson_1_Data_and_Model_Versioning/) | [`README.md`](Lesson_1_Data_and_Model_Versioning/README.md) | 5 rungs |
+| 2.2 | [Experiment Tracking — MLflow](Lesson_2_Experiment_Tracking_MLflow/) | [`README.md`](Lesson_2_Experiment_Tracking_MLflow/README.md) | 4 rungs |
+| 2.3 | [Experiment Tracking — W&B](Lesson_3_Experiment_Tracking_WandB/) | [`README.md`](Lesson_3_Experiment_Tracking_WandB/README.md) | 5 rungs |
 
 Read them in order. Each assumes only the previous one.
 
