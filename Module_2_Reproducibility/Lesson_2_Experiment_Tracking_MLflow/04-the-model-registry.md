@@ -334,7 +334,7 @@ A `.pkl` file is just serialized Python objects. An MLflow artifact is a self-de
 
 ## What the lesson demonstrates
 
-In `02-pipeline-tracked.ipynb`, cells 13–19:
+In `pipeline-tracked.ipynb`, cells 13–19:
 
 1. **Register** the best run's model as `nyc_taxi_predictor` version 1
 2. **Transition** to Staging, then to Production

@@ -6,7 +6,7 @@
 
 ## What you just did
 
-You ran `01-pipeline-untracked.ipynb`. It worked. It cleaned the NYC taxi data, engineered 30+ features, trained 6 models, tuned the best one, and saved it to disk.
+You ran `pipeline-untracked.ipynb`. It worked. It cleaned the NYC taxi data, engineered 30+ features, trained 6 models, tuned the best one, and saved it to disk.
 
 You looked at the comparison table. Random Forest won. Its val R² was something like 0.82. Its val MAE was around 4.3 minutes. You ran the test set — final R² and MAE printed. You saved the model to `models_nyc_taxi/<timestamp>/model.pkl`.
 
@@ -209,7 +209,7 @@ Three database lookups and one filesystem read. That's how "load by stage" works
 
 ## What the notebook does next
 
-`02-pipeline-tracked.ipynb` is the same pipeline as before — same data, same models, same metrics — but every step is now logged to this database.
+`pipeline-tracked.ipynb` is the same pipeline as before — same data, same models, same metrics — but every step is now logged to this database.
 
 You'll see:
 

@@ -71,8 +71,8 @@ Read the four rungs in order. Each assumes the previous.
 
 **Two notebooks** accompany the rungs:
 
-- `01-pipeline-untracked.ipynb` — the same pipeline with **no tracking**. Run this first.
-- `02-pipeline-tracked.ipynb` — the same pipeline, every step logged to MLflow.
+- `pipeline-untracked.ipynb` — the same pipeline with **no tracking**. Run this first.
+- `pipeline-tracked.ipynb` — the same pipeline, every step logged to MLflow.
 
 The contrast between them is the lesson.
 
@@ -113,7 +113,7 @@ uv run mlflow ui --backend-store-uri sqlite:///mlflow.db --port 5000
 # Open http://localhost:5000
 
 # Run the tracked notebook
-jupyter lab 02-pipeline-tracked.ipynb
+jupyter lab pipeline-tracked.ipynb
 
 # After it finishes, refresh the UI — 6 runs are now visible
 ```
@@ -188,8 +188,8 @@ DVC                 Docker   MLflow  MLflow  W&B
 | File | Purpose |
 |------|---------|
 | `01-the-run-problem.md` … `04-the-model-registry.md` | The four rungs — read in order |
-| [`01-pipeline-untracked.ipynb`](01-pipeline-untracked.ipynb) | The pipeline with no tracking |
-| [`02-pipeline-tracked.ipynb`](02-pipeline-tracked.ipynb) | The same pipeline, fully tracked |
+| [`pipeline-untracked.ipynb`](pipeline-untracked.ipynb) | The pipeline with no tracking |
+| [`pipeline-tracked.ipynb`](pipeline-tracked.ipynb) | The same pipeline, fully tracked |
 | [`scenarios/`](scenarios/) | The three official MLflow tutorial notebooks (single scientist, small team, multi-scientist) |
 | [`data/`](data/) | DVC-tracked NYC taxi sample (100K rows) |
 | [`mock-remote/`](mock-remote/) | Local DVC remote |
@@ -254,7 +254,7 @@ You should now be able to answer:
 
 ## How to Use This Lesson
 
-**For a first read:** open `01-pipeline-untracked.ipynb`, run it end to end, then read rung 01. Then open `02-pipeline-tracked.ipynb`, run it, and read rungs 02–04.
+**For a first read:** open `pipeline-untracked.ipynb`, run it end to end, then read rung 01. Then open `pipeline-tracked.ipynb`, run it, and read rungs 02–04.
 
 **For the registry:** if you already understand MLflow tracking and just want the registry, jump to rung 04 and cells 13–19 of notebook 02.
 

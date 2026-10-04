@@ -8,7 +8,7 @@
 
 A run is **one execution of your training code.** One model trained. One set of params. One set of metrics. One artifact.
 
-In `02-pipeline-tracked.ipynb`, every iteration of the training loop is one run. Six models → six runs.
+In `pipeline-tracked.ipynb`, every iteration of the training loop is one run. Six models → six runs.
 
 Under the hood, a run is a row in the `runs` table of the MLflow database. Everything else — params, metrics, tags, artifacts — are rows in separate tables with a foreign key pointing back to the run.
 
@@ -166,7 +166,7 @@ We'll cover the artifact contract in detail in rung 04.
 
 ## What the notebook logs
 
-Look at cell 9 of `02-pipeline-tracked.ipynb`. For each model in the portfolio:
+Look at cell 9 of `pipeline-tracked.ipynb`. For each model in the portfolio:
 
 ```python
 with mlflow.start_run(run_name=name) as run:
